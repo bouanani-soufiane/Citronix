@@ -8,7 +8,7 @@ public class CitronixApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CitronixApplication.class, args);
-		System.out.println("testing ci cd");
+		System.out.println("testing ci/cd");
 
 	}
 
