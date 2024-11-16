@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class Farm {
 
