@@ -79,8 +79,8 @@ jobs:
           context: .
           push: true
           tags: |
-            bouanani/citronix-api:latest
-            bouanani/citronix-api:${{ github.sha }}
+            bouananisoufiane/citronix-api:latest
+            bouananisoufiane/citronix-api:${{ github.sha }}
 
   deploy:
     needs: docker-build-push
