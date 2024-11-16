@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - 'main'
+      - 'master'
       - 'develop'
       - 'feature/EPIC-*'
       - 'feature/US-*'
@@ -14,7 +14,7 @@ on:
       - 'Dockerfile'
   pull_request:
     branches:
-      - 'main'
+      - 'master'
       - 'develop'
     paths:
       - 'src/**'
@@ -51,7 +51,7 @@ jobs:
 
   build-and-deploy:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -99,7 +99,7 @@ jobs:
       - name: Set Docker tag based on branch
         id: set-tag
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
             echo "tag=latest" >> $GITHUB_OUTPUT
           else
             echo "tag=staging" >> $GITHUB_OUTPUT
