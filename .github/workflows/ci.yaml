@@ -22,7 +22,7 @@ jobs:
         env:
           POSTGRES_DB: citronix
           POSTGRES_USER: soufiane
-          POSTGRES_PASSWORD: 1234
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         ports:
           - 5432:5432
         options: >-
@@ -50,19 +50,7 @@ jobs:
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/citronix
           SPRING_DATASOURCE_USERNAME: soufiane
-          SPRING_DATASOURCE_PASSWORD: 1234
-
-      - name: Cache SonarQube packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
   docker-build-push:
     needs: build-and-test
@@ -104,13 +92,11 @@ jobs:
         run: |
           echo "Deploying to production server..."
           # Add your deployment commands here
-          # For example, using SSH to connect to your server and pull/run the new Docker image
 
       - name: Verify Deployment
         run: |
           echo "Verifying deployment..."
           # Add verification steps here
-          # For example, health check endpoints
 
       - name: Create Release
         id: create_release
