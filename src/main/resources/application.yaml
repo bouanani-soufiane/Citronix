@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Citronix
+  datasource:
+    url: jdbc:postgresql://localhost:5432/citronix
+    username: soufiane
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true

@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  app:
+    image: citronix-api:latest
+    container_name: citronix-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      SPRING_APPLICATION_NAME: Citronix
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/citronix
+      SPRING_DATASOURCE_USERNAME: soufiane
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    ports:
+      - "8080:8080"
+    networks:
+      - citronix-network
+
+  postgres:
+    image: postgres:15
+    container_name: citronix-postgres
+    environment:
+      POSTGRES_DB: citronix
+      POSTGRES_USER: soufiane
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - citronix-network
+
+networks:
+  citronix-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
