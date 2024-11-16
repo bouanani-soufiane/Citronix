@@ -1,4 +1,4 @@
-# Citronix: Citrus Farm Management Application
+# Citronix: Citrus Harvest Management Application
 
 **Welcome to Citronix!**  
 Citronix is a citrus farm management application designed to streamline operations for farmers by managing farms, fields, trees, harvests, and sales. The application incorporates advanced constraints to ensure data consistency and optimal productivity.
@@ -9,7 +9,7 @@ Citronix is a citrus farm management application designed to streamline operatio
 
 ### **1. Domains**
 The primary business domains of Citronix are:
-- **Farm Management**: Organizes farms and their associated data.
+- **Harvest Management**: Organizes farms and their associated data.
 - **Field Management**: Manages fields within farms, including constraints on size and number.
 - **Tree Management**: Tracks trees, including planting dates, age, and productivity.
 - **Harvest Management**: Oversees seasonal harvests and their details.
@@ -18,8 +18,8 @@ The primary business domains of Citronix are:
 ---
 
 ### **2. Aggregates**
-- **Farm Aggregate**
-    - Root Entity: `Farm`
+- **Harvest Aggregate**
+    - Root Entity: `Harvest`
     - Associated Entities: `Field`
 - **Field Aggregate**
     - Root Entity: `Field`
@@ -37,7 +37,7 @@ The primary business domains of Citronix are:
 ---
 
 ### **3. Bounded Contexts**
-- **Farm Context**: Handles CRUD operations for farms and fields, ensuring size constraints.
+- **Harvest Context**: Handles CRUD operations for farms and fields, ensuring size constraints.
 - **Tree Context**: Manages tree lifecycle, including planting, aging, and productivity calculations.
 - **Harvest Context**: Oversees seasonal harvests and ensures trees are only harvested once per season.
 - **Sales Context**: Tracks sales and calculates revenues.
@@ -46,7 +46,7 @@ The primary business domains of Citronix are:
 
 ## **User Stories**
 
-### **Farm Management**
+### **Harvest Management**
 1. **As a farm owner**, I want to create, modify, and view farm details (name, location, size, creation date) to manage my farm efficiently.
 2. **As a farm owner**, I want to search for farms using multiple criteria to find specific information quickly.
 
@@ -139,8 +139,8 @@ JIRA: US-1.1
 [Brief description of the changes]
 
 ## JIRA Ticket  
-- [EPIC-1] Farm Domain Management  
-- [US-1.1] Farm Registration  
+- [EPIC-1] Harvest Domain Management  
+- [US-1.1] Harvest Registration  
 
 ## Type of Change  
 - [ ] New feature  
