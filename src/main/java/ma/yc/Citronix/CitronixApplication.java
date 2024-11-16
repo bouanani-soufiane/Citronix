@@ -10,6 +10,7 @@ public class CitronixApplication {
 		SpringApplication.run(CitronixApplication.class, args);
 		System.out.println("testing ci/cd");
 
+
 	}
 
 }
