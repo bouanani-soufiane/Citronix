@@ -47,4 +47,12 @@ class FarmController {
         FarmResponseDto updatedFarm = service.update(new FarmId(id), request);
         return ResponseEntity.status(HttpStatus.OK).body(updatedFarm);
     }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete ( @PathVariable Long id ) {
+        service.delete(new FarmId(id));
+        return ResponseEntity.noContent().build();
+    }
 }
+

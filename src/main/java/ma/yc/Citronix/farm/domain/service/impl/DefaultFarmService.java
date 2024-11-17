@@ -66,7 +66,9 @@ public class DefaultFarmService implements FarmService {
 
     @Override
     public void delete ( FarmId id ) {
-
+        if (!repository.existsById(id))
+            throw new NotFoundException("Farm", id.value());
+        repository.deleteById(id);
     }
 
     private void updateFarmFields ( Farm farm, FarmRequestDto dto ) {
