@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.farm.application.dto.request.FarmRequestDto;
+import ma.yc.Citronix.farm.application.dto.request.FarmUpdateDto;
 import ma.yc.Citronix.farm.application.dto.response.FarmResponseDto;
 import ma.yc.Citronix.farm.application.mapper.FarmMapper;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
@@ -69,9 +70,20 @@ public class DefaultFarmService implements FarmService {
 
 
     @Override
-    public FarmResponseDto update ( FarmId id, FarmRequestDto dto ) {
+    public FarmResponseDto update ( FarmId id, FarmUpdateDto dto ) {
         Farm farm = findEntityById(id);
-        updateFarmFields(farm, dto);
+        if (dto.name() != null && dto.name() != "") {
+            farm.setName(dto.name());
+        }
+        if (dto.localization() != null && dto.localization() != "" )  {
+            farm.setLocalization(dto.localization());
+        }
+        if (dto.surface() != null) {
+            farm.setSurface(dto.surface());
+        }
+        if (dto.creationDate() != null) {
+            farm.setCreationDate(dto.creationDate());
+        }
         return mapper.toResponseDto(farm);
     }
 
@@ -83,11 +95,5 @@ public class DefaultFarmService implements FarmService {
         repository.deleteById(id);
     }
 
-    private void updateFarmFields ( Farm farm, FarmRequestDto dto ) {
-        farm.setName(dto.name())
-                .setLocalization(dto.localization())
-                .setSurface(dto.surface())
-                .setCreationDate(dto.creationDate());
-    }
 
 }
