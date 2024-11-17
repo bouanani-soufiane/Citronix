@@ -10,6 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EntityExists {
+
     String message () default "Entity does not exist";
 
     Class<?>[] groups () default {};
