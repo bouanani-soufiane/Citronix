@@ -6,6 +6,7 @@ import ma.yc.Citronix.farm.application.dto.request.FarmRequestDto;
 import ma.yc.Citronix.farm.application.dto.response.FarmResponseDto;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.farm.domain.service.FarmService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,16 @@ import org.springframework.web.bind.annotation.*;
 class FarmController {
 
     private final FarmService service;
+
+
+    @GetMapping
+    public ResponseEntity<Page<FarmResponseDto>> findAll (
+            @RequestParam(defaultValue = "0") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        Page<FarmResponseDto> farms = service.findAll(pageNum, pageSize);
+        return ResponseEntity.ok(farms);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<FarmResponseDto> findById ( @PathVariable Long id ) {

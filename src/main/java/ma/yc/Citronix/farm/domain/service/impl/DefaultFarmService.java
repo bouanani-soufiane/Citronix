@@ -12,6 +12,7 @@ import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.farm.domain.service.FarmService;
 import ma.yc.Citronix.farm.infrastructure.repository.FarmRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +25,8 @@ public class DefaultFarmService implements FarmService {
 
     @Override
     public Page<FarmResponseDto> findAll ( int pageNum, int pageSize ) {
-        return null;
+        return repository.findAll(PageRequest.of(pageNum, pageSize))
+                .map(mapper::toResponseDto);
     }
 
     @Override
