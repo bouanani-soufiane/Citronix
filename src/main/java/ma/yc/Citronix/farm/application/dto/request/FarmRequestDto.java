@@ -7,19 +7,11 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 
-public record FarmRequestDto(
-        @NotBlank
-        String name,
+public record FarmRequestDto(@NotBlank String name,
 
-        @NotBlank
-        String localization,
+                             @NotBlank String localization,
 
-        @Positive
-        double surface,
+                             @Positive double surface,
 
-        @NotNull
-        @PastOrPresent
-        LocalDateTime creationDate
-
-) {
+                             @NotNull @PastOrPresent LocalDateTime creationDate) {
 }

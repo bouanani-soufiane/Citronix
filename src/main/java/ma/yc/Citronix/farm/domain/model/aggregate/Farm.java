@@ -3,6 +3,7 @@ package ma.yc.Citronix.farm.domain.model.aggregate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.field.domain.model.aggregate.Field;
 
 import java.time.LocalDateTime;
@@ -18,8 +19,8 @@ import java.util.List;
 public class Farm {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @AttributeOverride(name = "value", column = @Column(name = "id"))
+    private FarmId id;
 
     @NotBlank
     private String name;

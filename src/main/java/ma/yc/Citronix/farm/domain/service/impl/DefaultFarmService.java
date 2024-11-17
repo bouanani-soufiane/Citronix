@@ -32,12 +32,18 @@ public class DefaultFarmService implements FarmService {
 
     @Override
     public FarmResponseDto create(FarmRequestDto dto) {
-        return mapper.toResponseDto(repository.save(Farm.builder()
+        Farm farm = Farm.builder()
                 .name(dto.name())
                 .localization(dto.localization())
                 .surface(dto.surface())
                 .creationDate(dto.creationDate())
-                .build()));
+                .build();
+
+        Farm savedFarm = repository.save(farm);
+        log.debug("Saved farm with ID: {}", savedFarm.getId());
+
+        // Make sure we're using the saved entity that has the ID
+        return mapper.toResponseDto(savedFarm);
     }
 
 
