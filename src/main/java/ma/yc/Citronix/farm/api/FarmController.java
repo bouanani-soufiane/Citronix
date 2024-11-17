@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/farms")
 @RequiredArgsConstructor
@@ -48,6 +51,16 @@ class FarmController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedFarm);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<FarmResponseDto>> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String localization,
+            @RequestParam(required = false) Double surface,
+            @RequestParam(required = false) LocalDateTime creationDate
+    ) {
+        List<FarmResponseDto> farms = service.search(name, localization, surface, creationDate);
+        return ResponseEntity.ok(farms);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete ( @PathVariable Long id ) {

@@ -15,6 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -42,6 +46,14 @@ public class DefaultFarmService implements FarmService {
         return repository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("farm", id.value()));
+    }
+
+    @Override
+    public List<FarmResponseDto> search ( String name, String localization, Double surface, LocalDateTime creationDate ) {
+        List<Farm> farms = repository.search(name, localization, surface, creationDate);
+        return farms.stream()
+                .map(mapper::toResponseDto)
+                .collect(Collectors.toList());
     }
 
 
