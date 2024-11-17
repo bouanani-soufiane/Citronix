@@ -3,6 +3,7 @@ package ma.yc.Citronix.farm.domain.model.aggregate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.field.domain.model.aggregate.Field;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class Farm {
 
     @Id

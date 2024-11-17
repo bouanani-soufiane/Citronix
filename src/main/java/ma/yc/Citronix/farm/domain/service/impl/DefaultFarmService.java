@@ -3,10 +3,12 @@ package ma.yc.Citronix.farm.domain.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.farm.application.dto.request.FarmRequestDto;
 import ma.yc.Citronix.farm.application.dto.response.FarmResponseDto;
 import ma.yc.Citronix.farm.application.mapper.FarmMapper;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
+import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.farm.domain.service.FarmService;
 import ma.yc.Citronix.farm.infrastructure.repository.FarmRepository;
 import org.springframework.data.domain.Page;
@@ -26,34 +28,50 @@ public class DefaultFarmService implements FarmService {
     }
 
     @Override
-    public FarmResponseDto findById ( Long aLong ) {
-        return null;
+    public FarmResponseDto findById ( FarmId id ) {
+        return mapper.toResponseDto(repository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("Farm", id.value())));
     }
 
+
     @Override
-    public FarmResponseDto create(FarmRequestDto dto) {
-        Farm farm = Farm.builder()
+    public Farm findEntityById ( FarmId id ) {
+        return repository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("farm", id.value()));
+    }
+
+
+    @Override
+    public FarmResponseDto create ( FarmRequestDto dto ) {
+        return mapper.toResponseDto(repository.save(Farm.builder()
                 .name(dto.name())
                 .localization(dto.localization())
                 .surface(dto.surface())
                 .creationDate(dto.creationDate())
-                .build();
-
-        Farm savedFarm = repository.save(farm);
-        log.debug("Saved farm with ID: {}", savedFarm.getId());
-
-        // Make sure we're using the saved entity that has the ID
-        return mapper.toResponseDto(savedFarm);
+                .build()));
     }
 
 
     @Override
-    public FarmResponseDto update ( Long aLong, FarmRequestDto farmRequestDto ) {
-        return null;
+    public FarmResponseDto update ( FarmId id, FarmRequestDto dto ) {
+        Farm farm = findEntityById(id);
+        updateFarmFields(farm, dto);
+        return mapper.toResponseDto(farm);
     }
+
 
     @Override
-    public void delete ( Long aLong ) {
+    public void delete ( FarmId id ) {
 
     }
+
+    private void updateFarmFields ( Farm farm, FarmRequestDto dto ) {
+        farm.setName(dto.name())
+                .setLocalization(dto.localization())
+                .setSurface(dto.surface())
+                .setCreationDate(dto.creationDate());
+    }
+
 }
