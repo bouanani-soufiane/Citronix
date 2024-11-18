@@ -1,4 +1,4 @@
-package ma.yc.Citronix.farm.infrastructure.repository;
+package ma.yc.Citronix.farm.infrastructure.repository.CriteriaBuilder;
 
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 

@@ -42,6 +42,10 @@ public class DefaultFieldService implements FieldService {
         if (dto.surface() >= farm.getSurface() * 0.5)
             throw new RuntimeException("surface too long");
 
+        if(farm.getFields().stream().count() >= 10)
+            throw new RuntimeException("enough field");
+
+
         Field field = mapper.toEntity(dto);
         field.setFarm(farm);
 
@@ -58,4 +62,5 @@ public class DefaultFieldService implements FieldService {
     public void delete ( Field field ) {
 
     }
+
 }
