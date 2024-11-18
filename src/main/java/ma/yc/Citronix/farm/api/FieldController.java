@@ -41,4 +41,10 @@ class FieldController {
                 .status(HttpStatus.CREATED)
                 .body(field);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete ( @PathVariable Long id ) {
+        service.delete(new FieldId(id));
+        return ResponseEntity.noContent().build();
+    }
 }

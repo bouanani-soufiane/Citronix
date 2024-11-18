@@ -76,8 +76,9 @@ public class DefaultFieldService implements FieldService {
     }
 
     @Override
-    public void delete ( FieldId field ) {
-
+    public void delete ( FieldId id ) {
+        if (!repository.existsById(id)) throw new NotFoundException("Field", id.value());
+        repository.deleteById(id);
     }
 
 }
