@@ -3,6 +3,7 @@ package ma.yc.Citronix.farm.domain.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
 import ma.yc.Citronix.farm.application.dto.request.FieldRequestDto;
 import ma.yc.Citronix.farm.application.dto.request.FieldUpdateDto;
 import ma.yc.Citronix.farm.application.dto.response.FieldResponseDto;
@@ -14,9 +15,6 @@ import ma.yc.Citronix.farm.domain.service.FieldService;
 import ma.yc.Citronix.farm.infrastructure.repository.FieldRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -41,26 +39,31 @@ public class DefaultFieldService implements FieldService {
     @Override
     public FieldResponseDto create ( FieldRequestDto dto ) {
         Farm farm = farmService.findEntityById(dto.farm());
-        if(dto.surface() < 0.1)
-            throw new RuntimeException("surface sghira");
 
-        if (dto.surface() > farm.getSurface() * 0.5)
-            throw new RuntimeException("surface too long");
+        if (farm.getFields().stream().count() >= 10) {
+            throw new EntityConstraintViolationException("Farm", "Fields", farm.getFields().stream().count(), "A farm cannot have more than 10 fields.");
+        }
 
-        if (farm.getFields().stream().count() >= 10)
-            throw new RuntimeException("enough field");
+        if (dto.surface() < 0.1) {
+            throw new EntityConstraintViolationException("Field", "Surface", dto.surface(), "Field surface must be at least 0.1 hectare (1,000 m²).");
+        }
 
-        double sum = farm.getFields().stream().map(field -> field.getSurface()).mapToDouble(Double::doubleValue).sum();
+        if (dto.surface() > farm.getSurface() * 0.5) {
+            throw new EntityConstraintViolationException("Field", "Surface", dto.surface(), "Field surface cannot exceed 50% of the total farm surface (50% of " + farm.getSurface() + " hectares).");
+        }
 
-        if (farm.getSurface() < sum + dto.surface())
-            throw new RuntimeException("surfce kbira");
+        double totalFieldSurface = farm.getFields().stream().map(Field::getSurface).mapToDouble(Double::doubleValue).sum();
+
+        if (farm.getSurface() < totalFieldSurface + dto.surface()) {
+            throw new EntityConstraintViolationException("Farm", "Surface", totalFieldSurface + dto.surface(), "The total surface of all fields cannot exceed the farm's surface (" + farm.getSurface() + " hectares).");
+        }
 
         Field field = mapper.toEntity(dto);
         field.setFarm(farm);
 
         return mapper.toResponseDto(repository.save(field));
-
     }
+
 
     @Override
     public FieldResponseDto update ( Field field, FieldUpdateDto fieldUpdateDto ) {
