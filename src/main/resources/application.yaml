@@ -11,3 +11,8 @@ spring:
       ddl-auto: update
       dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+logging:
+  level:
+    root: INFO
+    org.hibernate.validator: DEBUG
+    org.springframework: WARN

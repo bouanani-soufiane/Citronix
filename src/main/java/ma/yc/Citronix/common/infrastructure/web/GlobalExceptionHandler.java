@@ -24,11 +24,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+    public ErrorResponse handleHttpMessageNotReadable ( HttpMessageNotReadableException ex ) {
         String message = "Invalid request format";
 
-        if (ex.getCause() instanceof InvalidFormatException) {
-            InvalidFormatException ife = (InvalidFormatException) ex.getCause();
+        if (ex.getCause() instanceof InvalidFormatException ife) {
             if (LocalDateTime.class.isAssignableFrom(ife.getTargetType())) {
                 message = "Invalid date format. Use format: yyyy-MM-ddTHH:mm:ss";
             }
@@ -48,9 +47,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationExceptions(final MethodArgumentNotValidException ex, WebRequest request) {
+    public ErrorResponse handleValidationExceptions ( final MethodArgumentNotValidException ex, WebRequest request ) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        ex.getBindingResult().getAllErrors().forEach(( error ) -> {
             final String fieldName = ((FieldError) error).getField();
             final String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
@@ -66,7 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleEntityNotFoundException( final EntityNotFoundException ex, WebRequest request) {
+    public ErrorResponse handleEntityNotFoundException ( final EntityNotFoundException ex, WebRequest request ) {
         return new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
@@ -77,7 +76,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleGeneralException(final Exception ex, WebRequest request) {
+    public ErrorResponse handleGeneralException ( final Exception ex, WebRequest request ) {
         return new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),

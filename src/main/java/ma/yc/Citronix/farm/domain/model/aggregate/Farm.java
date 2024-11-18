@@ -1,11 +1,14 @@
 package ma.yc.Citronix.farm.domain.model.aggregate;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.Accessors;
+import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
-import ma.yc.Citronix.field.domain.model.aggregate.Field;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

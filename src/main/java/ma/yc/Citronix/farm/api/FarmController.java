@@ -53,7 +53,7 @@ class FarmController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<FarmResponseDto>> search(
+    public ResponseEntity<List<FarmResponseDto>> search (
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String localization,
             @RequestParam(required = false) Double surface,

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -54,7 +53,7 @@ public class DefaultFarmService implements FarmService {
         List<Farm> farms = repository.search(name, localization, surface, creationDate);
         return farms.stream()
                 .map(mapper::toResponseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -75,7 +74,7 @@ public class DefaultFarmService implements FarmService {
         if (dto.name() != null && dto.name() != "") {
             farm.setName(dto.name());
         }
-        if (dto.localization() != null && dto.localization() != "" )  {
+        if (dto.localization() != null && dto.localization() != "") {
             farm.setLocalization(dto.localization());
         }
         if (dto.surface() != null) {

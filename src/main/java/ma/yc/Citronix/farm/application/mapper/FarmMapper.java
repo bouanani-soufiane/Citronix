@@ -7,5 +7,5 @@ import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import org.mapstruct.Mapper;
 
 @Mapper(config = BaseMapper.class)
-public interface FarmMapper extends BaseMapper<Farm, FarmRequestDto , FarmResponseDto>{
+public interface FarmMapper extends BaseMapper<Farm, FarmRequestDto, FarmResponseDto> {
 }
