@@ -2,9 +2,8 @@ package ma.yc.Citronix.farm.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.yc.Citronix.farm.application.dto.request.FieldRequestDto;
+import ma.yc.Citronix.farm.application.dto.request.create.FieldRequestDto;
 import ma.yc.Citronix.farm.application.dto.response.FieldResponseDto;
-import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.service.FieldService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

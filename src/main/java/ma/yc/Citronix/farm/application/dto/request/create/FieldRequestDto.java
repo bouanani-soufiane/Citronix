@@ -1,4 +1,4 @@
-package ma.yc.Citronix.farm.application.dto.request;
+package ma.yc.Citronix.farm.application.dto.request.create;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

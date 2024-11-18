@@ -8,8 +8,8 @@ import jakarta.persistence.GeneratedValue;
 @Embeddable
 public record FarmId(@GeneratedValue Long value) {
     @JsonCreator
-    public static FieldId of(Long value) {
-        return new FieldId(value);
+    public static FarmId of(Long value) {
+        return new FarmId(value);
     }
 
     @JsonValue
