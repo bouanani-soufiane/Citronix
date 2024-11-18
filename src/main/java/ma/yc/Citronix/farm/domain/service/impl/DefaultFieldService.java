@@ -15,6 +15,9 @@ import ma.yc.Citronix.farm.infrastructure.repository.FieldRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @Service
 @Transactional
 @Slf4j
@@ -42,9 +45,13 @@ public class DefaultFieldService implements FieldService {
         if (dto.surface() >= farm.getSurface() * 0.5)
             throw new RuntimeException("surface too long");
 
-        if(farm.getFields().stream().count() >= 10)
+        if (farm.getFields().stream().count() >= 10)
             throw new RuntimeException("enough field");
 
+        double sum = farm.getFields().stream().map(field -> field.getSurface()).mapToDouble(Double::doubleValue).sum();
+
+        if (farm.getSurface() < sum + dto.surface())
+            throw new RuntimeException("surfce kbira");
 
         Field field = mapper.toEntity(dto);
         field.setFarm(farm);
