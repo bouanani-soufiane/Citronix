@@ -15,5 +15,9 @@ public record FieldRequestDto(
 
         @EntityExists(entity = Farm.class)
         @NotNull
-        FarmId farm) {
+        FarmId farm
+
+)
+
+{
 }

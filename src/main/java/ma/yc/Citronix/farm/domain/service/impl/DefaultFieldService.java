@@ -71,8 +71,38 @@ public class DefaultFieldService implements FieldService {
 
 
     @Override
-    public FieldResponseDto update ( FieldId field, FieldUpdateDto fieldUpdateDto ) {
-        return null;
+    public FieldResponseDto update(FieldId id, FieldUpdateDto dto) {
+        Field existingField = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Field", id.value()));
+
+        Farm farm = existingField.getFarm();
+
+        if (dto.surface() < 0.1) {
+            throw new EntityConstraintViolationException("Field", "Surface", dto.surface(),
+                    "Field surface must be at least 0.1 hectare (1,000 m²).");
+        }
+
+        if (dto.surface() > farm.getSurface() * 0.5) {
+            throw new EntityConstraintViolationException("Field", "Surface", dto.surface(),
+                    "Field surface cannot exceed 50% of the total farm surface (50% of " + farm.getSurface() + " hectares).");
+        }
+
+        double totalFieldSurfaceExcludingCurrent = farm.getFields().stream()
+                .filter(field -> !field.getId().equals(id))
+                .mapToDouble(Field::getSurface)
+                .sum();
+
+        if (farm.getSurface() < totalFieldSurfaceExcludingCurrent + dto.surface()) {
+            throw new EntityConstraintViolationException("Farm", "Surface", totalFieldSurfaceExcludingCurrent + dto.surface(),
+                    "The total surface of all fields cannot exceed the farm's surface (" + farm.getSurface() + " hectares).");
+        }
+
+        existingField.setName(dto.name());
+        existingField.setSurface(dto.surface());
+
+        Field updatedField = repository.save(existingField);
+
+        return mapper.toResponseDto(updatedField);
     }
 
     @Override
