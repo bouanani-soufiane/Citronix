@@ -3,6 +3,7 @@ package ma.yc.Citronix.farm.api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.yc.Citronix.farm.application.dto.request.create.FieldRequestDto;
+import ma.yc.Citronix.farm.application.dto.request.update.FieldUpdateDto;
 import ma.yc.Citronix.farm.application.dto.response.FieldResponseDto;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
@@ -40,6 +41,15 @@ class FieldController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(field);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<FieldResponseDto> update(
+            @PathVariable Long id,
+            @Valid @RequestBody FieldUpdateDto request
+    ) {
+        FieldResponseDto updatedField = service.update(new FieldId(id), request);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedField);
     }
 
     @DeleteMapping("/{id}")
