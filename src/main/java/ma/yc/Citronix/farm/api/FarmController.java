@@ -2,8 +2,8 @@ package ma.yc.Citronix.farm.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.yc.Citronix.farm.application.dto.request.FarmRequestDto;
-import ma.yc.Citronix.farm.application.dto.request.FarmUpdateDto;
+import ma.yc.Citronix.farm.application.dto.request.create.FarmRequestDto;
+import ma.yc.Citronix.farm.application.dto.request.update.FarmUpdateDto;
 import ma.yc.Citronix.farm.application.dto.response.FarmResponseDto;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.farm.domain.service.FarmService;
@@ -53,7 +53,7 @@ class FarmController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<FarmResponseDto>> search(
+    public ResponseEntity<List<FarmResponseDto>> search (
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String localization,
             @RequestParam(required = false) Double surface,

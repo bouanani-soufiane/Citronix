@@ -3,9 +3,10 @@ package ma.yc.Citronix.farm.domain.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
 import ma.yc.Citronix.common.domain.exception.NotFoundException;
-import ma.yc.Citronix.farm.application.dto.request.FarmRequestDto;
-import ma.yc.Citronix.farm.application.dto.request.FarmUpdateDto;
+import ma.yc.Citronix.farm.application.dto.request.create.FarmRequestDto;
+import ma.yc.Citronix.farm.application.dto.request.update.FarmUpdateDto;
 import ma.yc.Citronix.farm.application.dto.response.FarmResponseDto;
 import ma.yc.Citronix.farm.application.mapper.FarmMapper;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -30,42 +30,42 @@ public class DefaultFarmService implements FarmService {
 
     @Override
     public Page<FarmResponseDto> findAll ( int pageNum, int pageSize ) {
-        return repository.findAll(PageRequest.of(pageNum, pageSize))
-                .map(mapper::toResponseDto);
+        return repository.findAll(PageRequest.of(pageNum, pageSize)).map(mapper::toResponseDto);
     }
 
     @Override
     public FarmResponseDto findById ( FarmId id ) {
-        return mapper.toResponseDto(repository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Farm", id.value())));
+        return mapper.toResponseDto(repository.findById(id).orElseThrow(() -> new NotFoundException("Farm", id.value())));
     }
 
 
     @Override
     public Farm findEntityById ( FarmId id ) {
-        return repository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("farm", id.value()));
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("farm", id.value()));
     }
 
     @Override
     public List<FarmResponseDto> search ( String name, String localization, Double surface, LocalDateTime creationDate ) {
         List<Farm> farms = repository.search(name, localization, surface, creationDate);
-        return farms.stream()
-                .map(mapper::toResponseDto)
-                .collect(Collectors.toList());
+        return farms.stream().map(mapper::toResponseDto).toList();
     }
 
 
     @Override
     public FarmResponseDto create ( FarmRequestDto dto ) {
-        return mapper.toResponseDto(repository.save(Farm.builder()
+        if (dto.surface() < 0.2) {
+            throw new EntityConstraintViolationException("Farm", "Surface", dto.surface(), "Farm surface must be at least 0.2 hectare (2,000 m²).");
+        }
+
+        Farm farm = Farm.builder()
                 .name(dto.name())
                 .localization(dto.localization())
                 .surface(dto.surface())
                 .creationDate(dto.creationDate())
-                .build()));
+                .fields(List.of())
+                .build();
+
+        return mapper.toResponseDto(repository.save(farm));
     }
 
 
@@ -75,7 +75,7 @@ public class DefaultFarmService implements FarmService {
         if (dto.name() != null && dto.name() != "") {
             farm.setName(dto.name());
         }
-        if (dto.localization() != null && dto.localization() != "" )  {
+        if (dto.localization() != null && dto.localization() != "") {
             farm.setLocalization(dto.localization());
         }
         if (dto.surface() != null) {
@@ -90,8 +90,7 @@ public class DefaultFarmService implements FarmService {
 
     @Override
     public void delete ( FarmId id ) {
-        if (!repository.existsById(id))
-            throw new NotFoundException("Farm", id.value());
+        if (!repository.existsById(id)) throw new NotFoundException("Farm", id.value());
         repository.deleteById(id);
     }
 

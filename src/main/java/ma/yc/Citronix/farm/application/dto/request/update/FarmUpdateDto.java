@@ -1,4 +1,4 @@
-package ma.yc.Citronix.farm.application.dto.request;
+package ma.yc.Citronix.farm.application.dto.request.update;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;

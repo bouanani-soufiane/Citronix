@@ -1,4 +1,4 @@
-package ma.yc.Citronix.farm.infrastructure.repository;
+package ma.yc.Citronix.farm.infrastructure.repository.CriteriaBuilder;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
