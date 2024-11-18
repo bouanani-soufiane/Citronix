@@ -4,12 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
+import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.farm.application.dto.request.create.FieldRequestDto;
 import ma.yc.Citronix.farm.application.dto.request.update.FieldUpdateDto;
 import ma.yc.Citronix.farm.application.dto.response.FieldResponseDto;
 import ma.yc.Citronix.farm.application.mapper.FieldMapper;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import ma.yc.Citronix.farm.domain.model.entity.Field;
+import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
 import ma.yc.Citronix.farm.domain.service.FarmService;
 import ma.yc.Citronix.farm.domain.service.FieldService;
 import ma.yc.Citronix.farm.infrastructure.repository.FieldRepository;
@@ -34,8 +36,9 @@ public class DefaultFieldService implements FieldService {
     }
 
     @Override
-    public FieldResponseDto findById ( Field field ) {
-        return null;
+    public FieldResponseDto findById ( FieldId id ) {
+        return mapper.toResponseDto(repository.findById(id).orElseThrow(() -> new NotFoundException("Field", id.value())));
+
     }
 
     @Override
@@ -68,12 +71,12 @@ public class DefaultFieldService implements FieldService {
 
 
     @Override
-    public FieldResponseDto update ( Field field, FieldUpdateDto fieldUpdateDto ) {
+    public FieldResponseDto update ( FieldId field, FieldUpdateDto fieldUpdateDto ) {
         return null;
     }
 
     @Override
-    public void delete ( Field field ) {
+    public void delete ( FieldId field ) {
 
     }
 

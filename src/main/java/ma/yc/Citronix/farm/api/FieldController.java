@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.yc.Citronix.farm.application.dto.request.create.FieldRequestDto;
 import ma.yc.Citronix.farm.application.dto.response.FieldResponseDto;
+import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
+import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
 import ma.yc.Citronix.farm.domain.service.FieldService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,12 @@ class FieldController {
     ) {
         Page<FieldResponseDto> fields = service.findAll(pageNum, pageSize);
         return ResponseEntity.ok(fields);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FieldResponseDto> findById ( @PathVariable Long id ) {
+        FieldResponseDto field = service.findById(new FieldId(id));
+        return ResponseEntity.status(HttpStatus.OK).body(field);
     }
 
     @PostMapping
