@@ -59,6 +59,9 @@ public class DefaultFarmService implements FarmService {
 
     @Override
     public FarmResponseDto create ( FarmRequestDto dto ) {
+        if(dto.surface() < 0.2)
+            throw new RuntimeException("too small");
+
         return mapper.toResponseDto(repository.save(Farm.builder()
                 .name(dto.name())
                 .localization(dto.localization())

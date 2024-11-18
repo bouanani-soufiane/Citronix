@@ -41,8 +41,10 @@ public class DefaultFieldService implements FieldService {
     @Override
     public FieldResponseDto create ( FieldRequestDto dto ) {
         Farm farm = farmService.findEntityById(dto.farm());
+        if(dto.surface() < 0.1)
+            throw new RuntimeException("surface sghira");
 
-        if (dto.surface() >= farm.getSurface() * 0.5)
+        if (dto.surface() > farm.getSurface() * 0.5)
             throw new RuntimeException("surface too long");
 
         if (farm.getFields().stream().count() >= 10)

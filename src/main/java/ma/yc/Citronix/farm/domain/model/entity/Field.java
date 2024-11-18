@@ -9,6 +9,7 @@ import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
 import ma.yc.Citronix.tree.domain.model.aggregate.Tree;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,6 +35,6 @@ public class Field {
     private Farm farm;
 
     @OneToMany
-    private List<Tree> trees;
+    private List<Tree> trees = new ArrayList<>();
 
 }
