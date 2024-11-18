@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
 @Slf4j
-@RequiredArgsConstructor
+@Service
 @Transactional
+@RequiredArgsConstructor
 public class DefaultFarmService implements FarmService {
     private final FarmRepository repository;
     private final FarmMapper mapper;
@@ -62,7 +62,6 @@ public class DefaultFarmService implements FarmService {
                 .localization(dto.localization())
                 .surface(dto.surface())
                 .creationDate(dto.creationDate())
-                .fields(List.of())
                 .build();
 
         return mapper.toResponseDto(repository.save(farm));

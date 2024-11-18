@@ -14,11 +14,12 @@ import ma.yc.Citronix.farm.domain.service.FarmService;
 import ma.yc.Citronix.farm.domain.service.FieldService;
 import ma.yc.Citronix.farm.infrastructure.repository.FieldRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
-@Slf4j
 @RequiredArgsConstructor
 public class DefaultFieldService implements FieldService {
 
@@ -28,7 +29,8 @@ public class DefaultFieldService implements FieldService {
 
     @Override
     public Page<FieldResponseDto> findAll ( int pageNum, int pageSize ) {
-        return null;
+        return repository.findAll(PageRequest.of(pageNum, pageSize)).map(mapper::toResponseDto);
+
     }
 
     @Override
