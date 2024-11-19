@@ -70,6 +70,10 @@ public class DefaultFarmService implements FarmService {
 
     @Override
     public FarmResponseDto update ( FarmId id, FarmUpdateDto dto ) {
+        if (dto.surface() < 0.2) {
+            throw new EntityConstraintViolationException("Farm", "Surface", dto.surface(), "Farm surface must be at least 0.2 hectare (2,000 m²).");
+        }
+
         Farm farm = findEntityById(id);
         if (dto.name() != null && dto.name() != "") {
             farm.setName(dto.name());

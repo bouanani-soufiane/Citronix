@@ -1,10 +1,11 @@
-package ma.yc.Citronix.common.application.validation;
+package ma.yc.Citronix.common.application.validation.validator;
 
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.yc.Citronix.common.application.validation.EntityExists;
 import org.springframework.stereotype.Component;
 
 @Slf4j

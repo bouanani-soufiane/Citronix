@@ -11,7 +11,7 @@ public record FieldUpdateDto(
 
         @NotBlank String name,
 
-        @Positive Double surface,
+        @Positive @NotNull Double surface,
 
         @EntityExists(entity = Farm.class)
         @NotNull

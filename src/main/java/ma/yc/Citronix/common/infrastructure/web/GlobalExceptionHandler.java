@@ -2,6 +2,8 @@ package ma.yc.Citronix.common.infrastructure.web;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
+import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
+import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -21,6 +23,39 @@ public class GlobalExceptionHandler {
     public static final String VALIDATION_FAILED_MESSAGE = "Validation failed";
     public static final String ENTITY_NOT_FOUND_MESSAGE = "Entity Not Found";
     public static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal Server Error";
+    public static final String ENTITY_CONSTRAINT_VIOLATION_MESSAGE = "Entity Constraint Violation";
+
+
+
+    @ExceptionHandler(EntityConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleEntityConstraintViolationException ( EntityConstraintViolationException ex) {
+        String message = String.format(
+                "The '%s' %s violated constraint with value {%s}, %s",
+                ex.getEntityName(),
+                ex.getAttribute(),
+                ex.getInvalidValue(),
+                ex.getMessage()
+        );
+
+        return new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                ENTITY_CONSTRAINT_VIOLATION_MESSAGE,
+                message
+        );
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(final NotFoundException ex, WebRequest request) {
+        return new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                ENTITY_NOT_FOUND_MESSAGE,
+                ex.getMessage()
+        );
+    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

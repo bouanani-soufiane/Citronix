@@ -7,6 +7,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.Accessors;
+import ma.yc.Citronix.common.application.validation.UniqueValue;
 import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 
@@ -21,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@Table(name = "trees")
+@Table(name = "farms")
 public class Farm {
 
     @Id
