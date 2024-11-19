@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.Month;
+
 @Slf4j
 @Service
 @Transactional
@@ -29,17 +31,23 @@ public class DefaultTreeService implements TreeService {
     private final TreeMapper mapper;
     private final FieldService fieldService;
 
+    private static final double MAX_TREES_PER_HECTARE = 100.0;
+    private static final Month PLANTING_START_MONTH = Month.MARCH;
+    private static final Month PLANTING_END_MONTH = Month.MAY;
+
+
     @Override
-    public Page<TreeResponseDto> findAll(int pageNum, int pageSize) {
+    public Page<TreeResponseDto> findAll ( int pageNum, int pageSize ) {
         return repository.findAll(PageRequest.of(pageNum, pageSize))
                 .map(mapper::toResponseDto);
     }
 
     @Override
-    public TreeResponseDto findById(TreeId id) {
+    public TreeResponseDto findById ( TreeId id ) {
         return mapper.toResponseDto(findTreeById(id));
     }
-    private Tree findTreeById(TreeId id) {
+
+    private Tree findTreeById ( TreeId id ) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Tree", id.value()));
     }
@@ -47,15 +55,9 @@ public class DefaultTreeService implements TreeService {
     @Override
     public TreeResponseDto create ( TreeRequestDto dto ) {
 
-        if (dto.plantingDate().getMonthValue() < 3 || dto.plantingDate().getMonthValue() > 5) {
-            throw new EntityConstraintViolationException("Tree", "planting date", dto.plantingDate().getMonth(), "Trees can only be planted between March and May of any year.");
-        }
-
+        validateCreateRequest(dto);
         Field field = fieldService.findEntityById(dto.field());
-        int countTree = repository.countByField(field);
-
-        if ((double) (countTree + 1) / field.getSurface() > 100)
-            throw new EntityConstraintViolationException("Tree", "count", countTree, "Cannot add more trees because you have reached the maximum density.");
+        validateTreeDensity(field);
 
 
         Tree tree = mapper.toEntity(dto);
@@ -65,17 +67,72 @@ public class DefaultTreeService implements TreeService {
     }
 
     @Override
-    public TreeResponseDto update ( TreeId id, TreeUpdateDto dto ) {
-        return null;
+    public TreeResponseDto update(TreeId id, TreeUpdateDto dto) {
+        Tree existingTree = findTreeById(id);
+
+        if (dto.field() != null && !dto.field().equals(existingTree.getField().getId())) {
+            Field newField = fieldService.findEntityById(dto.field());
+            validateTreeDensity(newField);
+            existingTree.setField(newField);
+        }
+
+        if (dto.plantingDate() != null) {
+            Month plantingMonth = dto.plantingDate().getMonth();
+            if (plantingMonth.getValue() < PLANTING_START_MONTH.getValue()
+                    || plantingMonth.getValue() > PLANTING_END_MONTH.getValue()) {
+                throw new EntityConstraintViolationException(
+                        "Tree",
+                        "planting date",
+                        plantingMonth,
+                        String.format("Trees can only be planted between %s and %s of any year.",
+                                PLANTING_START_MONTH, PLANTING_END_MONTH)
+                );
+            }
+            existingTree.setPlantingDate(dto.plantingDate());
+        }
+
+        Tree updatedTree = repository.save(existingTree);
+        return mapper.toResponseDto(updatedTree);
     }
 
     @Override
-    public void delete(TreeId id) {
+    public void delete ( TreeId id ) {
 
         if (!repository.existsById(id)) {
             throw new NotFoundException("Tree", id.value());
         }
 
         repository.deleteById(id);
+    }
+
+    private void validateTreeDensity ( Field field ) {
+        int currentTreeCount = repository.countByField(field);
+        double newDensity = (double) (currentTreeCount + 1) / field.getSurface();
+
+        if (newDensity > MAX_TREES_PER_HECTARE) {
+            throw new EntityConstraintViolationException(
+                    "Tree",
+                    "density",
+                    newDensity,
+                    String.format("Cannot add more trees. Maximum density is %.0f trees/ha. " +
+                                    "Current density with new tree would be %.2f trees/ha.",
+                            MAX_TREES_PER_HECTARE, newDensity)
+            );
+        }
+    }
+
+    private void validateCreateRequest ( TreeRequestDto dto ) {
+
+        Month plantingMonth = dto.plantingDate().getMonth();
+        if (plantingMonth.getValue() < PLANTING_START_MONTH.getValue()
+                || plantingMonth.getValue() > PLANTING_END_MONTH.getValue()) {
+            throw new EntityConstraintViolationException(
+                    "Tree",
+                    "planting date",
+                    plantingMonth,
+                    String.format("Trees can only be planted between %s and %s of any year.",
+                            PLANTING_START_MONTH, PLANTING_END_MONTH)
+            );
+        }
     }
 }
