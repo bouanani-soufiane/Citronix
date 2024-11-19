@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import ma.yc.Citronix.farm.application.dto.request.create.FieldRequestDto;
 import ma.yc.Citronix.farm.application.dto.request.update.FieldUpdateDto;
 import ma.yc.Citronix.farm.application.dto.response.FieldResponseDto;
-import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
 import ma.yc.Citronix.farm.domain.service.FieldService;
 import org.springframework.data.domain.Page;
