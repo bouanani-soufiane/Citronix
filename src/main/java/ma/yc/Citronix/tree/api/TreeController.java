@@ -40,4 +40,10 @@ class TreeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TreeResponseDto> findById ( @PathVariable Long id ) {
+        TreeResponseDto farm = service.findById(new TreeId(id));
+        return ResponseEntity.status(HttpStatus.OK).body(farm);
+    }
+
 }

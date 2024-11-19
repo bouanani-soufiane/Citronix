@@ -36,8 +36,12 @@ public class DefaultTreeService implements TreeService {
     }
 
     @Override
-    public TreeResponseDto findById ( TreeId id ) {
-        return null;
+    public TreeResponseDto findById(TreeId id) {
+        return mapper.toResponseDto(findTreeById(id));
+    }
+    private Tree findTreeById(TreeId id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tree", id.value()));
     }
 
     @Override
