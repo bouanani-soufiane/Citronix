@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
+import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.service.FieldService;
 import ma.yc.Citronix.tree.application.dto.request.create.TreeRequestDto;
@@ -63,7 +64,12 @@ public class DefaultTreeService implements TreeService {
     }
 
     @Override
-    public void delete ( TreeId id ) {
+    public void delete(TreeId id) {
 
+        if (!repository.existsById(id)) {
+            throw new NotFoundException("Tree", id.value());
+        }
+
+        repository.deleteById(id);
     }
 }
