@@ -134,4 +134,10 @@ public class DefaultFieldService implements FieldService {
         field.setName(dto.name());
         field.setSurface(dto.surface());
     }
+
+    @Override
+    public Field findEntityById ( FieldId id ) {
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("field", id.value()));
+
+    }
 }

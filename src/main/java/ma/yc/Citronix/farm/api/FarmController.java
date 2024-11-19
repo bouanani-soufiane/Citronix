@@ -43,7 +43,6 @@ class FarmController {
     public ResponseEntity<FarmResponseDto> create ( @Valid @RequestBody FarmRequestDto request ) {
         FarmResponseDto farm = service.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(farm);
-
     }
 
     @PutMapping("/{id}")

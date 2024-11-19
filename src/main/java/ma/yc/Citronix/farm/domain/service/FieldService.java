@@ -8,4 +8,5 @@ import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
 
 public interface FieldService extends CrudService<FieldId, FieldRequestDto, FieldUpdateDto, FieldResponseDto> {
+    Field findEntityById (FieldId id);
 }
