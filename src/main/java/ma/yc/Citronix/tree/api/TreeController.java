@@ -2,11 +2,11 @@ package ma.yc.Citronix.tree.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
 import ma.yc.Citronix.tree.application.dto.request.create.TreeRequestDto;
 import ma.yc.Citronix.tree.application.dto.response.TreeResponseDto;
 import ma.yc.Citronix.tree.domain.model.valueObject.TreeId;
 import ma.yc.Citronix.tree.domain.service.TreeService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +17,16 @@ import org.springframework.web.bind.annotation.*;
 class TreeController {
 
     private final TreeService service;
+
+    @GetMapping
+    public ResponseEntity<Page<TreeResponseDto>> findAll (
+            @RequestParam(defaultValue = "0") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        Page<TreeResponseDto> trees = service.findAll(pageNum, pageSize);
+        return ResponseEntity.ok(trees);
+    }
+
 
     @PostMapping
     public ResponseEntity<TreeResponseDto> create ( @Valid @RequestBody TreeRequestDto request ) {
