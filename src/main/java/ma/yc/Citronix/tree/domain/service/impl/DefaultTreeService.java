@@ -41,10 +41,16 @@ public class DefaultTreeService implements TreeService {
     public TreeResponseDto create ( TreeRequestDto dto ) {
 
         if (dto.plantingDate().getMonthValue() < 3 || dto.plantingDate().getMonthValue() > 5) {
-            throw new EntityConstraintViolationException("Tree" , "planting date" , dto.plantingDate().getMonth() , "Trees can only be planted between March and May of any year.");
+            throw new EntityConstraintViolationException("Tree", "planting date", dto.plantingDate().getMonth(), "Trees can only be planted between March and May of any year.");
         }
 
         Field field = fieldService.findEntityById(dto.field());
+        int countTree = repository.countByField(field);
+
+        if ((double) (countTree + 1) / field.getSurface() > 100)
+            throw new EntityConstraintViolationException("Tree", "count", countTree, "Cannot add more trees because you have reached the maximum density.");
+
+
         Tree tree = mapper.toEntity(dto);
         tree.setField(field);
         repository.save(tree);
