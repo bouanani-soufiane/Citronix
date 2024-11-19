@@ -3,6 +3,7 @@ package ma.yc.Citronix.tree.domain.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
 import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.service.FieldService;
 import ma.yc.Citronix.tree.application.dto.request.create.TreeRequestDto;
@@ -38,9 +39,13 @@ public class DefaultTreeService implements TreeService {
 
     @Override
     public TreeResponseDto create ( TreeRequestDto dto ) {
+
+        if (dto.plantingDate().getMonthValue() < 3 || dto.plantingDate().getMonthValue() > 5) {
+            throw new EntityConstraintViolationException("Tree" , "planting date" , dto.plantingDate().getMonth() , "Trees can only be planted between March and May of any year.");
+        }
+
         Field field = fieldService.findEntityById(dto.field());
         Tree tree = mapper.toEntity(dto);
-
         tree.setField(field);
         repository.save(tree);
         return mapper.toResponseDto(tree);
