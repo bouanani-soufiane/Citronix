@@ -16,6 +16,7 @@ import ma.yc.Citronix.tree.domain.model.valueObject.TreeId;
 import ma.yc.Citronix.tree.domain.service.TreeService;
 import ma.yc.Citronix.tree.infrastructure.repository.TreeRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -29,8 +30,9 @@ public class DefaultTreeService implements TreeService {
     private final FieldService fieldService;
 
     @Override
-    public Page<TreeResponseDto> findAll ( int pageNum, int pageSize ) {
-        return null;
+    public Page<TreeResponseDto> findAll(int pageNum, int pageSize) {
+        return repository.findAll(PageRequest.of(pageNum, pageSize))
+                .map(mapper::toResponseDto);
     }
 
     @Override
