@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.yc.Citronix.harvest.application.dto.request.create.HarvestRequestDto;
 import ma.yc.Citronix.harvest.application.dto.response.HarvestResponseDto;
+import ma.yc.Citronix.harvest.domain.model.valueObject.HarvestId;
 import ma.yc.Citronix.harvest.domain.service.HarvestService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -31,4 +32,12 @@ class HarvestController {
         HarvestResponseDto harvest = service.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(harvest);
     }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete ( @PathVariable Long id ) {
+        service.delete(new HarvestId(id));
+        return ResponseEntity.noContent().build();
+    }
 }
+

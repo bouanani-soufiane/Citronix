@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
+import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.farm.domain.service.FarmService;
@@ -68,7 +69,8 @@ public class DefaultHarvestService implements HarvestService {
 
     @Override
     public void delete ( HarvestId id ) {
-
+        if (!repository.existsById(id)) throw new NotFoundException("Harvest", id.value());
+        repository.deleteById(id);
     }
 
 
