@@ -65,7 +65,29 @@ public class DefaultHarvestService implements HarvestService {
 
     @Override
     public HarvestResponseDto update ( HarvestId id, HarvestUpdateDto dto ) {
-        return null;
+        Harvest existingHarvest = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Harvest", id.value()));
+
+        Farm farm = farmService.findEntityById(dto.farm());
+        Season season = dto.season();
+        LocalDateTime date = dto.date();
+
+        validateSeasonDate(season, date);
+
+        if (dto.season() != null || dto.date() != null) {
+            boolean isSameYearAndSeason = date.getYear() == existingHarvest.getDate().getYear()
+                    && season == existingHarvest.getSeason();
+
+            if (!isSameYearAndSeason) {
+                validateNoExistingHarvest(farm.getId(), season, date);
+            }
+        }
+
+        existingHarvest.setSeason(season);
+        existingHarvest.setDate(date);
+        existingHarvest.setFarm(farm);
+
+        return mapper.toResponseDto(repository.save(existingHarvest));
     }
 
     @Override
@@ -75,8 +97,7 @@ public class DefaultHarvestService implements HarvestService {
     }
 
 
-
-    private void validateSeasonDate( Season season, LocalDateTime date) {
+    private void validateSeasonDate ( Season season, LocalDateTime date ) {
         int month = date.getMonthValue();
         boolean isValidSeason = switch (season) {
             case SPRING -> month >= 3 && month <= 5;
@@ -86,11 +107,11 @@ public class DefaultHarvestService implements HarvestService {
         };
 
         if (!isValidSeason) {
-            throw new EntityConstraintViolationException("Harvest" , "season" , season , "does not match the provided date." );
+            throw new EntityConstraintViolationException("Harvest", "season", season, "does not match the provided date.");
         }
     }
 
-    private void validateNoExistingHarvest( FarmId id, Season season, LocalDateTime date) {
+    private void validateNoExistingHarvest ( FarmId id, Season season, LocalDateTime date ) {
 
         int year = date.getYear();
 
@@ -109,3 +130,4 @@ public class DefaultHarvestService implements HarvestService {
 
 
 }
+
