@@ -42,7 +42,8 @@ public class DefaultHarvestService implements HarvestService {
 
     @Override
     public HarvestResponseDto findById ( HarvestId id ) {
-        return null;
+        return mapper.toResponseDto(repository.findById(id).orElseThrow(() -> new NotFoundException("Harvest", id.value())));
+
     }
 
     @Override
