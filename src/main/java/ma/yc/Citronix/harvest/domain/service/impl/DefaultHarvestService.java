@@ -17,6 +17,7 @@ import ma.yc.Citronix.harvest.domain.model.valueObject.HarvestId;
 import ma.yc.Citronix.harvest.domain.service.HarvestService;
 import ma.yc.Citronix.harvest.infrastructure.repository.HarvestRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,8 @@ public class DefaultHarvestService implements HarvestService {
 
     @Override
     public Page<HarvestResponseDto> findAll ( int pageNum, int pageSize ) {
-        return null;
+        return repository.findAll(PageRequest.of(pageNum, pageSize)).map(mapper::toResponseDto);
+
     }
 
     @Override
