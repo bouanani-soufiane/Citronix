@@ -27,6 +27,12 @@ class HarvestController {
         return ResponseEntity.ok(harvests);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<HarvestResponseDto> findById ( @PathVariable Long id ) {
+        HarvestResponseDto harvest = service.findById(new HarvestId(id));
+        return ResponseEntity.status(HttpStatus.OK).body(harvest);
+    }
+
     @PostMapping
     public ResponseEntity<HarvestResponseDto> create ( @Valid @RequestBody HarvestRequestDto request ) {
         HarvestResponseDto harvest = service.create(request);
