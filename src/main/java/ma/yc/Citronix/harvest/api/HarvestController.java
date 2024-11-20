@@ -3,6 +3,7 @@ package ma.yc.Citronix.harvest.api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.yc.Citronix.harvest.application.dto.request.create.HarvestRequestDto;
+import ma.yc.Citronix.harvest.application.dto.request.update.HarvestUpdateDto;
 import ma.yc.Citronix.harvest.application.dto.response.HarvestResponseDto;
 import ma.yc.Citronix.harvest.domain.model.valueObject.HarvestId;
 import ma.yc.Citronix.harvest.domain.service.HarvestService;
@@ -19,10 +20,7 @@ class HarvestController {
     private final HarvestService service;
 
     @GetMapping
-    public ResponseEntity<Page<HarvestResponseDto>> findAll (
-            @RequestParam(defaultValue = "0") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize
-    ) {
+    public ResponseEntity<Page<HarvestResponseDto>> findAll ( @RequestParam(defaultValue = "0") Integer pageNum, @RequestParam(defaultValue = "10") Integer pageSize ) {
         Page<HarvestResponseDto> harvests = service.findAll(pageNum, pageSize);
         return ResponseEntity.ok(harvests);
     }
@@ -39,6 +37,12 @@ class HarvestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(harvest);
     }
 
+
+    @PutMapping("/{id}")
+    public ResponseEntity<HarvestResponseDto> update ( @PathVariable Long id, @Valid @RequestBody HarvestUpdateDto request ) {
+        HarvestResponseDto updatedHarvest = service.update(new HarvestId(id), request);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedHarvest);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete ( @PathVariable Long id ) {
