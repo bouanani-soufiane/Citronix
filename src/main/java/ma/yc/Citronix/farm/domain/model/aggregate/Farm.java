@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import ma.yc.Citronix.common.application.validation.UniqueValue;
 import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
+import ma.yc.Citronix.harvest.domain.model.aggregate.Harvest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,5 +45,8 @@ public class Farm {
 
     @OneToMany(mappedBy = "farm")
     private List<Field> fields = new ArrayList<>();
+
+    @OneToMany(mappedBy = "farm")
+    private List<Harvest> harvests = new ArrayList<>();
 
 }
