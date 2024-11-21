@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 class FarmServiceTest {
-    private static final Long FARM_ID = 993L;
+    private static final Long FARM_ID = 1L;
     private static final String FARM_NAME = "Azura Farm";
     private static final String FARM_LOCATION = "Agadir";
     private static final double FARM_SURFACE = 2000.0;
