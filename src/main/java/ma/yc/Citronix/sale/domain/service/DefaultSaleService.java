@@ -30,7 +30,8 @@ public class DefaultSaleService implements SaleService {
 
     @Override
     public SaleResponseDto findById ( SaleId id ) {
-        return null;
+        return mapper.toResponseDto(repository.findById(id).orElseThrow(() -> new NotFoundException("Field", id.value())));
+
     }
 
     @Override
