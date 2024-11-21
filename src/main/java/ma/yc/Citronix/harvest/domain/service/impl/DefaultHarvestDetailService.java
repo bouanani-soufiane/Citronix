@@ -62,7 +62,10 @@ public class DefaultHarvestDetailService implements HarvestDetailService {
 
     @Override
     public void delete ( HarvestDetailId id ) {
+        if (!repository.existsById(id))
+         throw new NotFoundException ("Harvest Details" , id);
 
+        repository.deleteById(id);
     }
 
     public boolean validateQttByTreeAge ( int age, double quantity ) {
