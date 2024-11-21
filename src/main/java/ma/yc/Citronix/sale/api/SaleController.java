@@ -6,6 +6,7 @@ import ma.yc.Citronix.sale.application.dto.request.SaleRequestDto;
 import ma.yc.Citronix.sale.application.dto.response.SaleResponseDto;
 import ma.yc.Citronix.sale.domain.model.valueObject.SaleId;
 import ma.yc.Citronix.sale.domain.service.impl.SaleService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,16 @@ class SaleController {
 
     private final SaleService service;
 
+
+
+    @GetMapping
+    public ResponseEntity<Page<SaleResponseDto>> findAll (
+            @RequestParam(defaultValue = "0") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        Page<SaleResponseDto> sales = service.findAll(pageNum, pageSize);
+        return ResponseEntity.ok(sales);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<SaleResponseDto> findById ( @PathVariable Long id ) {

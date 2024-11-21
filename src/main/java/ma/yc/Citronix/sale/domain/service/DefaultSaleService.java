@@ -12,6 +12,7 @@ import ma.yc.Citronix.sale.domain.model.valueObject.SaleId;
 import ma.yc.Citronix.sale.domain.service.impl.SaleService;
 import ma.yc.Citronix.sale.infrastructure.repository.SaleRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -25,7 +26,8 @@ public class DefaultSaleService implements SaleService {
 
     @Override
     public Page<SaleResponseDto> findAll ( int pageNum, int pageSize ) {
-        return null;
+        return repository.findAll(PageRequest.of(pageNum, pageSize))
+                .map(mapper::toResponseDto);
     }
 
     @Override
