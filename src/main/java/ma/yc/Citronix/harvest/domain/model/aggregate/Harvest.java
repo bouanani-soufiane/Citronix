@@ -9,7 +9,7 @@ import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import ma.yc.Citronix.harvest.domain.model.enums.Season;
 import ma.yc.Citronix.harvest.domain.model.valueObject.HarvestId;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Setter
@@ -25,13 +25,12 @@ public class Harvest {
     @AttributeOverride(name = "value", column = @Column(name = "id"))
     private HarvestId id;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Season season;
 
     @NotNull
     @PastOrPresent
-    private LocalDateTime date;
+    private LocalDate date;
 
     @ManyToOne
     private Farm farm;

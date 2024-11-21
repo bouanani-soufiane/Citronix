@@ -11,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -26,17 +25,10 @@ public class GlobalExceptionHandler {
     public static final String ENTITY_CONSTRAINT_VIOLATION_MESSAGE = "Entity Constraint Violation";
 
 
-
     @ExceptionHandler(EntityConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleEntityConstraintViolationException ( EntityConstraintViolationException ex) {
-        String message = String.format(
-                "The '%s' %s violated constraint with value {%s}, %s",
-                ex.getEntityName(),
-                ex.getAttribute(),
-                ex.getInvalidValue(),
-                ex.getMessage()
-        );
+    public ErrorResponse handleEntityConstraintViolationException ( EntityConstraintViolationException ex ) {
+        String message = ex.getMessage();
 
         return new ErrorResponse(
                 LocalDateTime.now(),
@@ -48,13 +40,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundException(final NotFoundException ex, WebRequest request) {
-        return new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.NOT_FOUND.value(),
-                ENTITY_NOT_FOUND_MESSAGE,
-                ex.getMessage()
-        );
+    public ErrorResponse handleNotFoundException ( final NotFoundException ex ) {
+        return new ErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), ENTITY_NOT_FOUND_MESSAGE, ex.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -72,17 +59,12 @@ public class GlobalExceptionHandler {
             message = "Invalid date format. The date must be in format: yyyy-MM-ddTHH:mm:ss (e.g., 2024-11-17T00:37:05)";
         }
 
-        return new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                "Bad Request",
-                message
-        );
+        return new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Bad Request", message);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationExceptions ( final MethodArgumentNotValidException ex, WebRequest request ) {
+    public ErrorResponse handleValidationExceptions ( final MethodArgumentNotValidException ex ) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(( error ) -> {
             final String fieldName = ((FieldError) error).getField();
@@ -90,33 +72,18 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        return new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                VALIDATION_FAILED_MESSAGE,
-                errors.toString()
-        );
+        return new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), VALIDATION_FAILED_MESSAGE, errors.toString());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleEntityNotFoundException ( final EntityNotFoundException ex, WebRequest request ) {
-        return new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.NOT_FOUND.value(),
-                ENTITY_NOT_FOUND_MESSAGE,
-                ex.getMessage()
-        );
+    public ErrorResponse handleEntityNotFoundException ( final EntityNotFoundException ex ) {
+        return new ErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), ENTITY_NOT_FOUND_MESSAGE, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleGeneralException ( final Exception ex, WebRequest request ) {
-        return new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                INTERNAL_SERVER_ERROR_MESSAGE,
-                ex.getMessage()
-        );
+    public ErrorResponse handleGeneralException ( final Exception ex ) {
+        return new ErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), INTERNAL_SERVER_ERROR_MESSAGE, ex.getMessage());
     }
 }

@@ -7,13 +7,13 @@ import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.harvest.domain.model.enums.Season;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record HarvestRequestDto(
 
         @NotNull Season season,
 
-        @NotNull @PastOrPresent LocalDateTime date,
+        @NotNull @PastOrPresent LocalDate date,
 
         @EntityExists(entity = Farm.class) FarmId farm
 

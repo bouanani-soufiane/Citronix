@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive;
 import ma.yc.Citronix.common.application.validation.UniqueValue;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record FarmRequestDto(
         @NotBlank
@@ -16,6 +16,6 @@ public record FarmRequestDto(
         @NotBlank String localization,
         @Positive @NotNull Double surface,
         @NotNull
-        @PastOrPresent LocalDateTime creationDate
+        @PastOrPresent LocalDate creationDate
 ) {
 }

@@ -7,12 +7,12 @@ import ma.yc.Citronix.farm.application.dto.response.FarmResponseDto;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface FarmService extends CrudService<FarmId, FarmRequestDto, FarmUpdateDto, FarmResponseDto> {
     Farm findEntityById ( FarmId id );
 
-    List<FarmResponseDto> search ( String name, String localization, Double surface, LocalDateTime creationDate );
+    List<FarmResponseDto> search ( String name, String localization, Double surface, LocalDate creationDate );
 
 }

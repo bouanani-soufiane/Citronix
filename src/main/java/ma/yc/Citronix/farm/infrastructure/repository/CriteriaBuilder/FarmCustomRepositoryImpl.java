@@ -9,7 +9,7 @@ import jakarta.persistence.criteria.Root;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class FarmCustomRepositoryImpl implements FarmCustomRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Farm> search ( String name, String localization, Double surface, LocalDateTime creationDate ) {
+    public List<Farm> search ( String name, String localization, Double surface, LocalDate creationDate ) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Farm> query = cb.createQuery(Farm.class);
         Root<Farm> root = query.from(Farm.class);

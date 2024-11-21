@@ -21,7 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 
 @Slf4j
@@ -54,29 +54,23 @@ public class DefaultHarvestService implements HarvestService {
 
         validateNoExistingHarvest(farm.getId(), dto.season(), dto.date());
 
-        Harvest harvest = Harvest.builder()
-                .season(dto.season())
-                .date(dto.date())
-                .farm(farm)
-                .build();
+        Harvest harvest = Harvest.builder().season(dto.season()).date(dto.date()).farm(farm).build();
 
         return mapper.toResponseDto(repository.save(harvest));
     }
 
     @Override
     public HarvestResponseDto update ( HarvestId id, HarvestUpdateDto dto ) {
-        Harvest existingHarvest = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Harvest", id.value()));
+        Harvest existingHarvest = repository.findById(id).orElseThrow(() -> new NotFoundException("Harvest", id.value()));
 
         Farm farm = farmService.findEntityById(dto.farm());
         Season season = dto.season();
-        LocalDateTime date = dto.date();
+        LocalDate date = dto.date();
 
         validateSeasonDate(season, date);
 
         if (dto.season() != null || dto.date() != null) {
-            boolean isSameYearAndSeason = date.getYear() == existingHarvest.getDate().getYear()
-                    && season == existingHarvest.getSeason();
+            boolean isSameYearAndSeason = date.getYear() == existingHarvest.getDate().getYear() && season == existingHarvest.getSeason();
 
             if (!isSameYearAndSeason) {
                 validateNoExistingHarvest(farm.getId(), season, date);
@@ -97,7 +91,7 @@ public class DefaultHarvestService implements HarvestService {
     }
 
 
-    private void validateSeasonDate ( Season season, LocalDateTime date ) {
+    private void validateSeasonDate ( Season season, LocalDate date ) {
         int month = date.getMonthValue();
         boolean isValidSeason = switch (season) {
             case SPRING -> month >= 3 && month <= 5;
@@ -111,23 +105,22 @@ public class DefaultHarvestService implements HarvestService {
         }
     }
 
-    private void validateNoExistingHarvest ( FarmId id, Season season, LocalDateTime date ) {
+    private void validateNoExistingHarvest ( FarmId id, Season season, LocalDate date ) {
 
         int year = date.getYear();
 
         boolean exists = repository.existsByFarmIdAndSeasonAndYear(id, season, year);
 
         if (exists) {
-            throw new EntityConstraintViolationException(
-                    "Harvest",
-                    "",
-                    season,
-                    "already exists for the specified season and year."
-            );
+            throw new EntityConstraintViolationException("Harvest", "", season, "already exists for the specified season and year.");
 
         }
     }
 
 
+    @Override
+    public Harvest findEntityById ( HarvestId id ) {
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("Harvest", id));
+    }
 }
 

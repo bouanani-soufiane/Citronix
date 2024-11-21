@@ -17,7 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -38,18 +38,16 @@ public class DefaultFarmService implements FarmService {
         return mapper.toResponseDto(repository.findById(id).orElseThrow(() -> new NotFoundException("Farm", id.value())));
     }
 
-
     @Override
     public Farm findEntityById ( FarmId id ) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("farm", id.value()));
     }
 
     @Override
-    public List<FarmResponseDto> search ( String name, String localization, Double surface, LocalDateTime creationDate ) {
+    public List<FarmResponseDto> search ( String name, String localization, Double surface, LocalDate creationDate ) {
         List<Farm> farms = repository.search(name, localization, surface, creationDate);
         return farms.stream().map(mapper::toResponseDto).toList();
     }
-
 
     @Override
     public FarmResponseDto create ( FarmRequestDto dto ) {
@@ -90,12 +88,9 @@ public class DefaultFarmService implements FarmService {
         return mapper.toResponseDto(farm);
     }
 
-
     @Override
     public void delete ( FarmId id ) {
         if (!repository.existsById(id)) throw new NotFoundException("Farm", id.value());
         repository.deleteById(id);
     }
-
-
 }
