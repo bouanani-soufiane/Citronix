@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.sale.application.dto.request.SaleRequestDto;
+import ma.yc.Citronix.sale.application.dto.request.SaleUpdateDto;
 import ma.yc.Citronix.sale.application.dto.response.SaleResponseDto;
 import ma.yc.Citronix.sale.application.mapper.SaleMapper;
 import ma.yc.Citronix.sale.domain.model.aggregate.Sale;
@@ -43,8 +44,17 @@ public class DefaultSaleService implements SaleService {
     }
 
     @Override
-    public SaleResponseDto update ( SaleId id, SaleRequestDto dto ) {
-        return null;
+    public SaleResponseDto update(SaleId id, SaleUpdateDto dto) {
+        Sale sale = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Sale", id.value()));
+
+        sale.setDate(dto.date());
+        sale.setClient(dto.client());
+        sale.setUnitPrice(dto.unitPrice());
+
+        Sale updatedSale = repository.save(sale);
+
+        return mapper.toResponseDto(updatedSale);
     }
 
     @Override

@@ -3,6 +3,7 @@ package ma.yc.Citronix.sale.api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.yc.Citronix.sale.application.dto.request.SaleRequestDto;
+import ma.yc.Citronix.sale.application.dto.request.SaleUpdateDto;
 import ma.yc.Citronix.sale.application.dto.response.SaleResponseDto;
 import ma.yc.Citronix.sale.domain.model.valueObject.SaleId;
 import ma.yc.Citronix.sale.domain.service.impl.SaleService;
@@ -41,6 +42,17 @@ class SaleController {
         SaleResponseDto sale = service.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(sale);
     }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SaleResponseDto> update(
+            @PathVariable Long id,
+            @Valid @RequestBody SaleUpdateDto request
+    ) {
+        SaleResponseDto updatedSale = service.update(new SaleId(id), request);
+        return ResponseEntity.ok(updatedSale);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete ( @PathVariable Long id ) {
