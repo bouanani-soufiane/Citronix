@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
+import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.harvest.application.dto.request.create.HarvestDetailRequestDto;
 import ma.yc.Citronix.harvest.application.dto.response.HarvestDetailResponseDto;
 import ma.yc.Citronix.harvest.application.mapper.HarvestDetailMapper;
@@ -45,6 +46,23 @@ public class DefaultHarvestDetailService implements HarvestDetailService {
                 new HarvestDetail(harvest, tree, dto.date(), dto.quantity())
         );
         return mapper.toResponseDto(savedDetail);
+    }
+
+    @Override
+    public HarvestDetailResponseDto findById ( HarvestDetailId id ) {
+        return repository.findById(id)
+                .map(mapper::toResponseDto)
+                .orElseThrow(() -> new NotFoundException("Harvest Details" , id));
+    }
+
+    @Override
+    public HarvestDetailResponseDto update ( HarvestDetailId id, HarvestDetailRequestDto dto ) {
+        return null;
+    }
+
+    @Override
+    public void delete ( HarvestDetailId id ) {
+
     }
 
     public boolean validateQttByTreeAge ( int age, double quantity ) {
