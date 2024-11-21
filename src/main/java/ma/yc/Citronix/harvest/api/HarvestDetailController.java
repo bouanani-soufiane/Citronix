@@ -39,4 +39,15 @@ public class HarvestDetailController {
         HarvestDetailResponseDto response = service.create(harvestDetailId, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    @DeleteMapping("/{harvestId}/{treeId}")
+    public ResponseEntity<Void> delete(@PathVariable Long harvestId,
+                                       @PathVariable Long treeId) {
+
+        HarvestDetailId harvestDetailId = new HarvestDetailId(
+                new HarvestId(harvestId),
+                new TreeId(treeId)
+        );
+        service.delete(harvestDetailId);
+        return ResponseEntity.noContent().build();
+    }
 }
