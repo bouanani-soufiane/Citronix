@@ -42,23 +42,21 @@ class FieldServiceTest {
     private static final Long FIELD_ID = 1L;
     private static final String FIELD_NAME = "Happy Field";
     private static final Double FIELD_SURFACE = 10.0;
-    private static final Farm.FarmBuilder DEFAULT_FARM = Farm.builder()
-            .id(new FarmId(FARM_ID))
-            .name("Test Farm")
-            .localization("Test Location")
-            .surface(100.0)
-            .creationDate(LocalDate.now());
+    private static final Farm.FarmBuilder DEFAULT_FARM = Farm.builder().id(new FarmId(FARM_ID)).name("Test Farm").localization("Test Location").surface(100.0).creationDate(LocalDate.now());
 
-    @Mock private FieldRepository fieldRepository;
-    @Mock private FieldMapper fieldMapper;
-    @Mock private FarmService farmService;
+    @Mock
+    private FieldRepository fieldRepository;
+    @Mock
+    private FieldMapper fieldMapper;
+    @Mock
+    private FarmService farmService;
 
     private FieldService fieldService;
     private Farm testFarm;
     private Field testField;
 
     @BeforeEach
-    void setUp() {
+    void setUp () {
         fieldService = new DefaultFieldService(fieldMapper, fieldRepository, farmService);
         testFarm = DEFAULT_FARM.fields(new ArrayList<>()).build();
         testField = createField(FIELD_ID, FIELD_NAME, FIELD_SURFACE, testFarm);
@@ -70,14 +68,12 @@ class FieldServiceTest {
 
         @Test
         @DisplayName("Should throw NotFoundException when field doesn't exist")
-        void findById_WithNonExistentId_ShouldThrowNotFoundException() {
+        void findById_WithNonExistentId_ShouldThrowNotFoundException () {
             FieldId nonExistentId = new FieldId(999L);
 
             given(fieldRepository.findById(nonExistentId)).willReturn(Optional.empty());
 
-            assertThatThrownBy(() -> fieldService.findById(nonExistentId))
-                    .isInstanceOf(NotFoundException.class)
-                    .hasMessage("Field with id 999 not found");
+            assertThatThrownBy(() -> fieldService.findById(nonExistentId)).isInstanceOf(NotFoundException.class).hasMessage("Field with id 999 not found");
 
             verify(fieldRepository).findById(nonExistentId);
             verifyNoMoreInteractions(fieldRepository, fieldMapper);
@@ -85,7 +81,7 @@ class FieldServiceTest {
 
         @Test
         @DisplayName("Should return field when exists")
-        void findById_WithExistingId_ShouldReturnField() {
+        void findById_WithExistingId_ShouldReturnField () {
             FieldResponseDto expectedResponse = createFieldResponse(testField);
             given(fieldRepository.findById(testField.getId())).willReturn(Optional.of(testField));
             given(fieldMapper.toResponseDto(testField)).willReturn(expectedResponse);
@@ -96,7 +92,6 @@ class FieldServiceTest {
             verify(fieldRepository).findById(testField.getId());
             verify(fieldMapper).toResponseDto(testField);
         }
-
     }
 
     @Nested
@@ -105,36 +100,50 @@ class FieldServiceTest {
 
         @Test
         @DisplayName("Should throw exception when field count exceeds limit")
-        void create_WhenFieldCountExceedsLimit_ShouldThrowException() {
-            List<Field> existingFields = IntStream.range(0, 10)
-                    .mapToObj(i -> createField((long) i, "Field " + i, 5.0, testFarm))
-                    .toList();
+        void create_WhenFieldCountExceedsLimit_ShouldThrowException () {
+            List<Field> existingFields = IntStream.range(0, 10).mapToObj(i -> createField((long) i, "Field " + i, 5.0, testFarm)).toList();
             testFarm.setFields(new ArrayList<>(existingFields));
 
             FieldRequestDto request = new FieldRequestDto("New Field", 5.0, new FarmId(FARM_ID));
             given(farmService.findEntityById(request.farm())).willReturn(testFarm);
 
-            assertThatThrownBy(() -> fieldService.create(request))
-                    .isInstanceOf(EntityConstraintViolationException.class)
-                    .hasMessageContaining("A farm cannot have more than 10 fields");
+            assertThatThrownBy(() -> fieldService.create(request)).isInstanceOf(EntityConstraintViolationException.class).hasMessageContaining("A farm cannot have more than 10 fields");
 
             verify(fieldRepository, never()).save(any());
         }
 
         @Test
         @DisplayName("Should throw exception when field surface exceeds limit")
-        void create_WhenFieldSurfaceExceedsLimit_ShouldThrowException() {
+        void create_WhenFieldSurfaceExceedsLimit_ShouldThrowException () {
 
             double exceedingSurface = testFarm.getSurface() * 0.51;
             FieldRequestDto request = new FieldRequestDto("Large Field", exceedingSurface, new FarmId(FARM_ID));
             given(farmService.findEntityById(request.farm())).willReturn(testFarm);
 
-            assertThatThrownBy(() -> fieldService.create(request))
-                    .isInstanceOf(EntityConstraintViolationException.class)
-                    .hasMessageContaining("Field surface cannot exceed 50% of the total farm surface");
+            assertThatThrownBy(() -> fieldService.create(request)).isInstanceOf(EntityConstraintViolationException.class).hasMessageContaining("Field surface cannot exceed 50% of the total farm surface");
 
             verify(fieldRepository, never()).save(any());
         }
+
+        @Test
+        @DisplayName("Should throw exception when total field surface exceeds farm surface")
+        void create_WhenTotalFieldSurfaceExceedsFarmSurface_ShouldThrowException () {
+            double newFieldSurface = 30.0;
+
+            testFarm.setSurface(100.0);
+
+            List<Field> existingFields = IntStream.range(0, 8).mapToObj(i -> createField((long) i, "Field " + i, 10.0, testFarm)).toList();
+            testFarm.setFields(new ArrayList<>(existingFields));
+
+            FieldRequestDto request = new FieldRequestDto("New Field", newFieldSurface, new FarmId(FARM_ID));
+
+            given(farmService.findEntityById(request.farm())).willReturn(testFarm);
+
+            assertThatThrownBy(() -> fieldService.create(request)).isInstanceOf(EntityConstraintViolationException.class).hasMessageContaining("total surface of all fields cannot exceed the farm's surface");
+
+            verify(fieldRepository, never()).save(any());
+        }
+
     }
 
     @Nested
@@ -143,8 +152,8 @@ class FieldServiceTest {
 
         @Test
         @DisplayName("Should successfully update field with valid data")
-        void update_WithValidData_ShouldSucceed() {
-            // Arrange
+        void update_WithValidData_ShouldSucceed () {
+
             FieldUpdateDto request = new FieldUpdateDto("Updated Field", 15.0, new FarmId(FARM_ID));
             Field updatedField = createField(FIELD_ID, request.name(), request.surface(), testFarm);
 
@@ -153,39 +162,25 @@ class FieldServiceTest {
             given(fieldRepository.save(any(Field.class))).willReturn(updatedField);
             given(fieldMapper.toResponseDto(updatedField)).willReturn(createFieldResponse(updatedField));
 
-            // Act
             FieldResponseDto response = fieldService.update(new FieldId(FIELD_ID), request);
 
-            // Assert
-            assertThat(response)
-                    .satisfies(r -> {
-                        assertThat(r.name()).isEqualTo(request.name());
-                        assertThat(r.surface()).isEqualTo(request.surface());
-                    });
+            assertThat(response).satisfies(r -> {
+                assertThat(r.name()).isEqualTo(request.name());
+                assertThat(r.surface()).isEqualTo(request.surface());
+            });
             verify(fieldRepository).save(any(Field.class));
         }
     }
 
-    private Field createField(Long id, String name, Double surface, Farm farm) {
+    private Field createField ( Long id, String name, Double surface, Farm farm ) {
         return new Field(new FieldId(id), name, surface, farm, List.of());
     }
 
-    private FieldResponseDto createFieldResponse(Field field) {
-        return new FieldResponseDto(
-                field.getId(),
-                field.getName(),
-                field.getSurface(),
-                createEmbeddedFarmResponse(field.getFarm())
-        );
+    private FieldResponseDto createFieldResponse ( Field field ) {
+        return new FieldResponseDto(field.getId(), field.getName(), field.getSurface(), createEmbeddedFarmResponse(field.getFarm()));
     }
 
-    private EmbeddedFarmResponseDto createEmbeddedFarmResponse(Farm farm) {
-        return new EmbeddedFarmResponseDto(
-                farm.getId().value(),
-                farm.getName(),
-                farm.getLocalization(),
-                farm.getSurface(),
-                farm.getCreationDate()
-        );
+    private EmbeddedFarmResponseDto createEmbeddedFarmResponse ( Farm farm ) {
+        return new EmbeddedFarmResponseDto(farm.getId().value(), farm.getName(), farm.getLocalization(), farm.getSurface(), farm.getCreationDate());
     }
 }
