@@ -17,6 +17,14 @@ class SaleController {
 
     private final SaleService service;
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SaleResponseDto> findById ( @PathVariable Long id ) {
+        SaleResponseDto sale = service.findById(new SaleId(id));
+        return ResponseEntity.status(HttpStatus.OK).body(sale);
+    }
+
+
     @PostMapping
     public ResponseEntity<SaleResponseDto> create ( @Valid @RequestBody SaleRequestDto request ) {
         SaleResponseDto sale = service.create(request);
