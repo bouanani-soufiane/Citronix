@@ -4,10 +4,10 @@ import ma.yc.Citronix.common.application.validation.EntityExists;
 import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record TreeUpdateDto(
-        LocalDateTime plantingDate,
+        LocalDate plantingDate,
         @EntityExists(entity = Field.class) FieldId field
 ) {
 }

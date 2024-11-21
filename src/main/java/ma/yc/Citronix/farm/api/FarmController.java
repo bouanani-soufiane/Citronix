@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -56,7 +56,7 @@ class FarmController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String localization,
             @RequestParam(required = false) Double surface,
-            @RequestParam(required = false) LocalDateTime creationDate
+            @RequestParam(required = false) LocalDate creationDate
     ) {
         List<FarmResponseDto> farms = service.search(name, localization, surface, creationDate);
         return ResponseEntity.ok(farms);

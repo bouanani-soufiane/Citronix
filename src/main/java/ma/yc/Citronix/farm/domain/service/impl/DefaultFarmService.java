@@ -17,7 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -45,7 +45,7 @@ public class DefaultFarmService implements FarmService {
     }
 
     @Override
-    public List<FarmResponseDto> search ( String name, String localization, Double surface, LocalDateTime creationDate ) {
+    public List<FarmResponseDto> search ( String name, String localization, Double surface, LocalDate creationDate ) {
         List<Farm> farms = repository.search(name, localization, surface, creationDate);
         return farms.stream().map(mapper::toResponseDto).toList();
     }

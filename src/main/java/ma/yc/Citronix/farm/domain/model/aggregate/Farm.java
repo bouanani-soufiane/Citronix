@@ -12,6 +12,7 @@ import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.harvest.domain.model.aggregate.Harvest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Farm {
 
     @NotNull
     @PastOrPresent
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
 
     @OneToMany(mappedBy = "farm")
     private List<Field> fields = new ArrayList<>();

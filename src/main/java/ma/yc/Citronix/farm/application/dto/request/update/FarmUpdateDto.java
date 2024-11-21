@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record FarmUpdateDto(
 
@@ -18,7 +18,7 @@ public record FarmUpdateDto(
 
         @Positive(message = "Surface must be a positive number")
         Double surface,
-        LocalDateTime creationDate
+        LocalDate creationDate
 ) {
     public void validate () {
         if (name != null && name.trim().isEmpty()) {
