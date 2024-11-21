@@ -14,14 +14,10 @@ public class EntityConstraintViolationException extends RuntimeException {
     }
 
     private static String buildMessage(String entityName, String attribute, Object invalidValue, String message) {
-        if (attribute == null || attribute.isBlank()) {
-            return String.format("Constraint violation in '%s': %s.", entityName, message);
-        }
-        if (invalidValue == null) {
-            return String.format("Constraint violation in '%s': '%s' %s.", entityName, attribute, message);
-        }
-        return String.format("Constraint violation in '%s': '%s' has invalid value '%s'. Reason: %s.",
-                entityName, attribute, invalidValue, message);
+        return String.format(
+                "The '%s' attribute of the '%s' entity has an invalid value: '%s'. %s",
+                attribute, entityName, invalidValue, message
+        );
     }
 
     public String getEntityName() {

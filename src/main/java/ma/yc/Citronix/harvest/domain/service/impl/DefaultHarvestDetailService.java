@@ -47,12 +47,6 @@ public class DefaultHarvestDetailService implements HarvestDetailService {
         return mapper.toResponseDto(savedDetail);
     }
 
-
-
-
-
-
-
     public boolean validateQttByTreeAge ( int age, double quantity ) {
         if (age < 3 && quantity > 2.5) {
             throw new EntityConstraintViolationException(
@@ -86,8 +80,6 @@ public class DefaultHarvestDetailService implements HarvestDetailService {
                     "Tree with age > 20 considered as unproductive"
             );
         }
-
-
 
         return true;
     }

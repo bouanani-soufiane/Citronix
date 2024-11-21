@@ -38,7 +38,6 @@ public class DefaultFarmService implements FarmService {
         return mapper.toResponseDto(repository.findById(id).orElseThrow(() -> new NotFoundException("Farm", id.value())));
     }
 
-
     @Override
     public Farm findEntityById ( FarmId id ) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("farm", id.value()));
@@ -49,7 +48,6 @@ public class DefaultFarmService implements FarmService {
         List<Farm> farms = repository.search(name, localization, surface, creationDate);
         return farms.stream().map(mapper::toResponseDto).toList();
     }
-
 
     @Override
     public FarmResponseDto create ( FarmRequestDto dto ) {
@@ -90,12 +88,9 @@ public class DefaultFarmService implements FarmService {
         return mapper.toResponseDto(farm);
     }
 
-
     @Override
     public void delete ( FarmId id ) {
         if (!repository.existsById(id)) throw new NotFoundException("Farm", id.value());
         repository.deleteById(id);
     }
-
-
 }
