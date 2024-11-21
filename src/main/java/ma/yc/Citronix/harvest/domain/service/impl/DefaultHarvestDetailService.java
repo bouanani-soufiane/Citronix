@@ -36,8 +36,6 @@ public class DefaultHarvestDetailService implements HarvestDetailService {
         Harvest harvest = harvestService.findEntityById(id.harvestId());
         Tree tree = treeService.findTreeById(id.treeId());
 
-        System.out.println(tree.getAge());
-
         if(repository.existsByHarvestIdAndTreeId(harvest.getId(),tree.getId()))
             throw new EntityConstraintViolationException("Harvest" , "tree" , tree.getId().value(),"already been harvested for the specified harvest");
 
@@ -56,9 +54,19 @@ public class DefaultHarvestDetailService implements HarvestDetailService {
     }
 
     @Override
-    public HarvestDetailResponseDto update ( HarvestDetailId id, HarvestDetailRequestDto dto ) {
-        return null;
+    public HarvestDetailResponseDto update(HarvestDetailId id, HarvestDetailRequestDto dto) {
+        HarvestDetail harvestDetail = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Harvest Details" , id));
+
+        Tree tree = treeService.findTreeById(id.treeId());
+        validateQttByTreeAge(tree.getAge(), dto.quantity());
+
+        harvestDetail.setQuantity(dto.quantity()).setDate(dto.date());
+
+
+        return mapper.toResponseDto(harvestDetail);
     }
+
 
     @Override
     public void delete ( HarvestDetailId id ) {

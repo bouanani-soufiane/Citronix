@@ -39,6 +39,19 @@ public class HarvestDetailController {
         HarvestDetailResponseDto response = service.create(harvestDetailId, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @PutMapping("/{harvestId}/{treeId}")
+    public ResponseEntity<HarvestDetailResponseDto> update(@PathVariable Long harvestId,
+                                                           @PathVariable Long treeId,
+                                                           @RequestBody @Valid HarvestDetailRequestDto request) {
+        HarvestDetailId harvestDetailId = new HarvestDetailId(
+                new HarvestId(harvestId),
+                new TreeId(treeId)
+        );
+        HarvestDetailResponseDto response = service.update(harvestDetailId, request);
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{harvestId}/{treeId}")
     public ResponseEntity<Void> delete(@PathVariable Long harvestId,
                                        @PathVariable Long treeId) {
