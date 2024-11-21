@@ -19,14 +19,23 @@ public class HarvestDetailController {
 
     private final HarvestDetailService service;
 
+
+    @GetMapping("/{harvestId}/{treeId}")
+    public ResponseEntity<HarvestDetailResponseDto> findById (
+            @PathVariable Long harvestId,
+            @PathVariable Long treeId ) {
+
+        HarvestDetailId harvestDetailId = new HarvestDetailId(new HarvestId(harvestId), new TreeId(treeId));
+        HarvestDetailResponseDto response = service.findById(harvestDetailId);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/{harvestId}/{treeId}")
-    public ResponseEntity<HarvestDetailResponseDto> create( @PathVariable Long harvestId,
-                                                         @PathVariable Long treeId,
-                                                         @RequestBody @Valid HarvestDetailRequestDto request) {
-        HarvestDetailId harvestDetailId = new HarvestDetailId(
-                new HarvestId(harvestId),
-                new TreeId(treeId)
-        );
+    public ResponseEntity<HarvestDetailResponseDto> create (
+            @PathVariable Long harvestId,
+            @PathVariable Long treeId,
+            @RequestBody @Valid HarvestDetailRequestDto request ) {
+        HarvestDetailId harvestDetailId = new HarvestDetailId(new HarvestId(harvestId), new TreeId(treeId));
         HarvestDetailResponseDto response = service.create(harvestDetailId, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

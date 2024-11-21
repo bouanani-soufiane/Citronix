@@ -8,5 +8,10 @@ import ma.yc.Citronix.harvest.domain.model.valueObject.HarvestDetailId;
 public interface HarvestDetailService {
 
     HarvestDetailResponseDto create( HarvestDetailId id, HarvestDetailRequestDto dto);
+    HarvestDetailResponseDto findById(HarvestDetailId id);
 
+
+    HarvestDetailResponseDto update(HarvestDetailId id, HarvestDetailRequestDto dto);
+
+    void delete(HarvestDetailId id);
 }
