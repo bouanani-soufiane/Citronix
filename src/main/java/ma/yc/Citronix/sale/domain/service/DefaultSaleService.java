@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.sale.application.dto.request.SaleRequestDto;
+import ma.yc.Citronix.sale.application.dto.request.SaleUpdateDto;
 import ma.yc.Citronix.sale.application.dto.response.SaleResponseDto;
 import ma.yc.Citronix.sale.application.mapper.SaleMapper;
 import ma.yc.Citronix.sale.domain.model.aggregate.Sale;
@@ -12,6 +13,7 @@ import ma.yc.Citronix.sale.domain.model.valueObject.SaleId;
 import ma.yc.Citronix.sale.domain.service.impl.SaleService;
 import ma.yc.Citronix.sale.infrastructure.repository.SaleRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -25,7 +27,8 @@ public class DefaultSaleService implements SaleService {
 
     @Override
     public Page<SaleResponseDto> findAll ( int pageNum, int pageSize ) {
-        return null;
+        return repository.findAll(PageRequest.of(pageNum, pageSize))
+                .map(mapper::toResponseDto);
     }
 
     @Override
@@ -41,8 +44,17 @@ public class DefaultSaleService implements SaleService {
     }
 
     @Override
-    public SaleResponseDto update ( SaleId id, SaleRequestDto dto ) {
-        return null;
+    public SaleResponseDto update(SaleId id, SaleUpdateDto dto) {
+        Sale sale = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Sale", id.value()));
+
+        sale.setDate(dto.date());
+        sale.setClient(dto.client());
+        sale.setUnitPrice(dto.unitPrice());
+
+        Sale updatedSale = repository.save(sale);
+
+        return mapper.toResponseDto(updatedSale);
     }
 
     @Override
