@@ -35,6 +35,8 @@ public class Harvest {
     @PastOrPresent
     private LocalDate date;
 
+    private Double totalQuantity;
+
     @ManyToOne
     private Farm farm;
 
@@ -43,6 +45,15 @@ public class Harvest {
 
     @OneToOne(mappedBy = "harvest")
     private Sale sale;
+
+    public void addHarvestDetail ( HarvestDetail harvestDetail) {
+        if (harvestDetails == null) harvestDetails = new ArrayList<>();
+
+        this.harvestDetails.add(harvestDetail);
+        this.totalQuantity = harvestDetails.stream()
+                .mapToDouble(HarvestDetail::getQuantity)
+                .sum();
+    }
 
 
 

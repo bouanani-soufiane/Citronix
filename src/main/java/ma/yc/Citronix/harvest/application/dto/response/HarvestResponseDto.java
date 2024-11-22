@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public record HarvestResponseDto(
         HarvestId id,
         Season season,
-        LocalDate date
+        LocalDate date,
+        Double totalQuantity
 ) {
 }
