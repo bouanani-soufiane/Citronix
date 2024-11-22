@@ -18,6 +18,8 @@ import ma.yc.Citronix.tree.domain.model.aggregate.Tree;
 import ma.yc.Citronix.tree.domain.service.TreeService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Slf4j
 @Service
@@ -112,5 +114,9 @@ public class DefaultHarvestDetailService implements HarvestDetailService {
         }
 
         return true;
+    }
+
+    public List<Object[]> getTotalQuantityByField() {
+        return repository.findTotalQuantityByFieldName();
     }
 }
