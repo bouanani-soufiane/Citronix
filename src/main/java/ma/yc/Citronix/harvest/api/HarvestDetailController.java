@@ -41,9 +41,10 @@ public class HarvestDetailController {
     }
 
     @PutMapping("/{harvestId}/{treeId}")
-    public ResponseEntity<HarvestDetailResponseDto> update(@PathVariable Long harvestId,
-                                                           @PathVariable Long treeId,
-                                                           @RequestBody @Valid HarvestDetailRequestDto request) {
+    public ResponseEntity<HarvestDetailResponseDto> update (
+            @PathVariable Long harvestId,
+            @PathVariable Long treeId,
+            @RequestBody @Valid HarvestDetailRequestDto request ) {
         HarvestDetailId harvestDetailId = new HarvestDetailId(
                 new HarvestId(harvestId),
                 new TreeId(treeId)
@@ -53,8 +54,9 @@ public class HarvestDetailController {
     }
 
     @DeleteMapping("/{harvestId}/{treeId}")
-    public ResponseEntity<Void> delete(@PathVariable Long harvestId,
-                                       @PathVariable Long treeId) {
+    public ResponseEntity<Void> delete (
+            @PathVariable Long harvestId,
+            @PathVariable Long treeId ) {
 
         HarvestDetailId harvestDetailId = new HarvestDetailId(
                 new HarvestId(harvestId),

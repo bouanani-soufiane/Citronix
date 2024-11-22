@@ -43,6 +43,7 @@ public class DefaultHarvestDetailService implements HarvestDetailService {
         HarvestDetail savedDetail = repository.save(
                 new HarvestDetail(harvest, tree, dto.date(), dto.quantity())
         );
+        harvest.addHarvestDetail(savedDetail);
         return mapper.toResponseDto(savedDetail);
     }
 
