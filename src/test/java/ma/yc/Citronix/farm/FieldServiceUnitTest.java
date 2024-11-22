@@ -42,7 +42,12 @@ class FieldServiceTest {
     private static final Long FIELD_ID = 1L;
     private static final String FIELD_NAME = "Happy Field";
     private static final Double FIELD_SURFACE = 10.0;
-    private static final Farm.FarmBuilder DEFAULT_FARM = Farm.builder().id(new FarmId(FARM_ID)).name("Test Farm").localization("Test Location").surface(100.0).creationDate(LocalDate.now());
+    private static final Farm.FarmBuilder DEFAULT_FARM =
+            Farm.builder()
+            .id(new FarmId(FARM_ID)).name("Test Farm")
+            .localization("Test Location")
+            .surface(100.0)
+            .creationDate(LocalDate.now());
 
     @Mock
     private FieldRepository fieldRepository;
@@ -107,7 +112,9 @@ class FieldServiceTest {
             FieldRequestDto request = new FieldRequestDto("New Field", 5.0, new FarmId(FARM_ID));
             given(farmService.findEntityById(request.farm())).willReturn(testFarm);
 
-            assertThatThrownBy(() -> fieldService.create(request)).isInstanceOf(EntityConstraintViolationException.class).hasMessageContaining("A farm cannot have more than 10 fields");
+            assertThatThrownBy(() -> fieldService.create(request))
+                    .isInstanceOf(EntityConstraintViolationException.class)
+                    .hasMessageContaining("A farm cannot have more than 10 fields");
 
             verify(fieldRepository, never()).save(any());
         }
@@ -120,7 +127,9 @@ class FieldServiceTest {
             FieldRequestDto request = new FieldRequestDto("Large Field", exceedingSurface, new FarmId(FARM_ID));
             given(farmService.findEntityById(request.farm())).willReturn(testFarm);
 
-            assertThatThrownBy(() -> fieldService.create(request)).isInstanceOf(EntityConstraintViolationException.class).hasMessageContaining("Field surface cannot exceed 50% of the total farm surface");
+            assertThatThrownBy(() -> fieldService.create(request))
+                    .isInstanceOf(EntityConstraintViolationException.class)
+                    .hasMessageContaining("Field surface cannot exceed 50% of the total farm surface");
 
             verify(fieldRepository, never()).save(any());
         }
@@ -139,7 +148,9 @@ class FieldServiceTest {
 
             given(farmService.findEntityById(request.farm())).willReturn(testFarm);
 
-            assertThatThrownBy(() -> fieldService.create(request)).isInstanceOf(EntityConstraintViolationException.class).hasMessageContaining("total surface of all fields cannot exceed the farm's surface");
+            assertThatThrownBy(() -> fieldService.create(request))
+                    .isInstanceOf(EntityConstraintViolationException.class)
+                    .hasMessageContaining("total surface of all fields cannot exceed the farm's surface");
 
             verify(fieldRepository, never()).save(any());
         }
