@@ -13,4 +13,6 @@ public interface HarvestRepository extends JpaRepository<Harvest, HarvestId> {
             "AND h.season = :season " +
             "AND YEAR(h.date) = :year")
     boolean existsByFarmIdAndSeasonAndYear(FarmId id, Season season, int year);
+
+
 }

@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/harvests")
 @RequiredArgsConstructor
@@ -64,5 +67,15 @@ public class HarvestDetailController {
         );
         service.delete(harvestDetailId);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/total-by-field")
+    public List<Map<String, Object>> getTotalQuantityByField() {
+        List<Object[]> results = service.getTotalQuantityByField();
+        return results.stream()
+                .map(result -> Map.of(
+                        "fieldName", result[0],
+                        "totalQuantity", result[1]
+                ))
+                .toList();
     }
 }
