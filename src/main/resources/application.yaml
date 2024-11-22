@@ -16,3 +16,19 @@ logging:
     root: INFO
     org.hibernate.validator: DEBUG
     org.springframework: WARN
+
+
+##---------- API information ---------------------------------
+contact:
+  email: yc.ma
+
+local-server:
+  url: http://localhost:8080/
+
+prod-server:
+  url: http://localhost:8080/
+
+project:
+  version: 1.0
+  title: Citornix
+  description: Citornix pour la gestion des fermes
