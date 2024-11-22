@@ -4,10 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.yc.Citronix.common.domain.exception.NotFoundException;
+import ma.yc.Citronix.harvest.domain.model.aggregate.Harvest;
+import ma.yc.Citronix.harvest.domain.service.HarvestService;
 import ma.yc.Citronix.sale.application.dto.request.SaleRequestDto;
 import ma.yc.Citronix.sale.application.dto.request.SaleUpdateDto;
 import ma.yc.Citronix.sale.application.dto.response.SaleResponseDto;
 import ma.yc.Citronix.sale.application.mapper.SaleMapper;
+import ma.yc.Citronix.sale.domain.exception.HarvestAlreadySoldException;
 import ma.yc.Citronix.sale.domain.model.aggregate.Sale;
 import ma.yc.Citronix.sale.domain.model.valueObject.SaleId;
 import ma.yc.Citronix.sale.domain.service.impl.SaleService;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class DefaultSaleService implements SaleService {
     private final SaleRepository repository;
     private final SaleMapper mapper;
+    private final HarvestService harvestService;
 
 
     @Override
@@ -40,11 +44,24 @@ public class DefaultSaleService implements SaleService {
     @Override
     public SaleResponseDto create ( SaleRequestDto dto ) {
 
-        return mapper.toResponseDto(repository.save(mapper.toEntity(dto)));
+        if(repository.existsByHarvestId(dto.harvest()))
+            throw new HarvestAlreadySoldException("The harvest with ID " + dto.harvest() + " has already been sold.");
+
+        Harvest harvest = harvestService.findEntityById(dto.harvest());
+
+        Sale sale = mapper.toEntity(dto);
+
+        sale.setHarvest(harvest);
+
+        return mapper.toResponseDto(repository.save(sale));
     }
 
     @Override
-    public SaleResponseDto update(SaleId id, SaleUpdateDto dto) {
+    public SaleResponseDto update ( SaleId id, SaleUpdateDto dto ) {
+
+        if(repository.existsByHarvestId(dto.harvest()))
+            throw new HarvestAlreadySoldException("The harvest with ID " + dto.harvest() + " has already been sold.");
+
         Sale sale = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Sale", id.value()));
 

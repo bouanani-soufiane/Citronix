@@ -8,8 +8,11 @@ import lombok.experimental.Accessors;
 import ma.yc.Citronix.farm.domain.model.aggregate.Farm;
 import ma.yc.Citronix.harvest.domain.model.enums.Season;
 import ma.yc.Citronix.harvest.domain.model.valueObject.HarvestId;
+import ma.yc.Citronix.sale.domain.model.aggregate.Sale;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Setter
@@ -34,6 +37,13 @@ public class Harvest {
 
     @ManyToOne
     private Farm farm;
+
+    @OneToMany(mappedBy = "harvest", fetch = FetchType.EAGER)
+    private List<HarvestDetail> harvestDetails = new ArrayList<>();
+
+    @OneToOne(mappedBy = "harvest")
+    private Sale sale;
+
 
 
 }

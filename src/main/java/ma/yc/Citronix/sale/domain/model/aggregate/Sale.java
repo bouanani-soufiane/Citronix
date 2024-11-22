@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import ma.yc.Citronix.harvest.domain.model.aggregate.Harvest;
 import ma.yc.Citronix.sale.domain.model.valueObject.SaleId;
 
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @Table(name = "sales")
 public class Sale {
 
-    @EmbeddedId
+    @Id
     @AttributeOverride(name = "value", column = @Column(name = "id"))
     private SaleId id;
 
@@ -27,6 +28,9 @@ public class Sale {
 
     @NotBlank
     private String client;
+
+    @OneToOne
+    private Harvest harvest;
 
     @Positive
     @Column(name = "unit_price")
