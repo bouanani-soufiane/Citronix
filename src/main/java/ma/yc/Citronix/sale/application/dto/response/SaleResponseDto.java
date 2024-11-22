@@ -10,6 +10,7 @@ public record SaleResponseDto(
         LocalDate date,
         String client,
         Double unitPrice,
+        Double income,
         HarvestResponseDto harvest
 ) {
 }

@@ -36,4 +36,15 @@ public class Sale {
     @Column(name = "unit_price")
     private Double unitPrice;
 
+    @Transient
+    private Double income;
+
+    public Double getIncome(){
+        return calculateIncome();
+    }
+
+    public Double calculateIncome() {
+        return unitPrice * harvest.getTotalQuantity();
+    }
+
 }
