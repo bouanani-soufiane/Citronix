@@ -59,6 +59,7 @@ public class DefaultFarmService implements FarmService {
                 .name(dto.name())
                 .localization(dto.localization())
                 .surface(dto.surface())
+                .fields(List.of())
                 .creationDate(dto.creationDate())
                 .build();
 
