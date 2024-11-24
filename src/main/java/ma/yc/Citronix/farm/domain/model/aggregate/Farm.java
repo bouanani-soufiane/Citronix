@@ -7,13 +7,11 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.Accessors;
-import ma.yc.Citronix.common.application.validation.UniqueValue;
 import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.model.valueObject.FarmId;
 import ma.yc.Citronix.harvest.domain.model.aggregate.Harvest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

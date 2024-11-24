@@ -3,8 +3,8 @@ spring:
     name: Citronix
   datasource:
     url: jdbc:postgresql://localhost:5432/citronix
-    username: soufiane
-    password: 1234
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
