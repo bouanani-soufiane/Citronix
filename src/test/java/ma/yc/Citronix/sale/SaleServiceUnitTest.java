@@ -1,6 +1,7 @@
 package ma.yc.Citronix.sale;
 
 import ma.yc.Citronix.common.domain.exception.NotFoundException;
+import ma.yc.Citronix.harvest.application.dto.response.HarvestResponseDto;
 import ma.yc.Citronix.harvest.domain.model.aggregate.Harvest;
 import ma.yc.Citronix.harvest.domain.service.HarvestService;
 import ma.yc.Citronix.sale.application.dto.request.SaleRequestDto;
@@ -74,14 +75,23 @@ class SaleServiceTest {
     }
 
     private SaleResponseDto createExpectedResponse(Sale sale) {
+        HarvestResponseDto harvestResponseDto = new HarvestResponseDto(
+                sale.getHarvest().getId(),
+                sale.getHarvest().getSeason(),
+                sale.getHarvest().getDate(),
+                sale.getHarvest().getTotalQuantity()
+        );
+
         return new SaleResponseDto(
                 sale.getId(),
                 sale.getDate(),
                 sale.getClient(),
                 sale.getUnitPrice(),
-                null // HarvestResponseDto would be set here in real scenario
+                null,  // Replace this with the actual value if needed
+                harvestResponseDto  // Pass the actual HarvestResponseDto here
         );
     }
+
 
     @Nested
     class FindAllTests {
@@ -177,7 +187,7 @@ class SaleServiceTest {
             given(saleRepository.findById(testSaleId)).willReturn(Optional.of(testSale));
             given(saleRepository.save(any(Sale.class))).willReturn(testSale);
             given(saleMapper.toResponseDto(any(Sale.class)))
-                    .willReturn(new SaleResponseDto(testSaleId, SALE_DATE, updatedClient, UNIT_PRICE, null));
+                    .willReturn(new SaleResponseDto(testSaleId, SALE_DATE, updatedClient, UNIT_PRICE, 10.6 , null));
 
             SaleResponseDto result = saleService.update(testSaleId, request);
 
