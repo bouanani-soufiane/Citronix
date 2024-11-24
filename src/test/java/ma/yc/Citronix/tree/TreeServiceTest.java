@@ -1,7 +1,6 @@
 package ma.yc.Citronix.tree;
 
 import ma.yc.Citronix.common.domain.exception.EntityConstraintViolationException;
-import ma.yc.Citronix.common.domain.exception.NotFoundException;
 import ma.yc.Citronix.farm.domain.model.entity.Field;
 import ma.yc.Citronix.farm.domain.model.valueObject.FieldId;
 import ma.yc.Citronix.farm.domain.service.FieldService;
@@ -24,20 +23,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultTreeServiceTest {
 
     private static final Long FIELD_ID = 1L;
     private static final Long TREE_ID = 1L;
-    private static final double FIELD_SURFACE = 10.0; // 1 hectare
+    private static final double FIELD_SURFACE = 10.0;
 
     @Mock
     private TreeRepository treeRepository;
@@ -51,7 +50,7 @@ class DefaultTreeServiceTest {
     private Tree testTree;
 
     @BeforeEach
-    void setUp() {
+    void setUp () {
         treeService = new DefaultTreeService(treeRepository, treeMapper, fieldService);
         testField = createField(FIELD_ID, "Test Field", FIELD_SURFACE);
         testTree = createTree(TREE_ID, LocalDate.of(2023, Month.APRIL, 15), testField);
@@ -63,45 +62,44 @@ class DefaultTreeServiceTest {
 
         @Test
         @DisplayName("Should throw exception when planting date is outside allowed months")
-        void create_WhenPlantingDateOutsideAllowedMonths_ShouldThrowException() {
+        void create_WhenPlantingDateOutsideAllowedMonths_ShouldThrowException () {
+
             LocalDate invalidPlantingDate = LocalDate.of(2023, Month.FEBRUARY, 15);
             TreeRequestDto request = new TreeRequestDto(invalidPlantingDate, new FieldId(FIELD_ID));
-
-            given(fieldService.findEntityById(request.field())).willReturn(testField);
 
             assertThatThrownBy(() -> treeService.create(request))
                     .isInstanceOf(EntityConstraintViolationException.class)
                     .hasMessageContaining("Trees can only be planted between MARCH and MAY");
 
+            verify(fieldService, never()).findEntityById(any());
             verify(treeRepository, never()).save(any());
         }
 
+
         @Test
         @DisplayName("Should throw exception when tree density exceeds maximum")
-        void create_WhenTreeDensityExceedsMaximum_ShouldThrowException() {
-            // Simulate field already at max density
+        void create_WhenTreeDensityExceedsMaximum_ShouldThrowException () {
+            // Create a field with 1 hectare surface area
+            Field testField = createField(FIELD_ID, "Test Field", 1.0);
+
+            TreeRequestDto request = new TreeRequestDto(LocalDate.of(2023, Month.APRIL, 15), new FieldId(FIELD_ID));
+
+            // Mock only the necessary dependencies
             given(fieldService.findEntityById(any(FieldId.class))).willReturn(testField);
             given(treeRepository.countByField(testField)).willReturn(100);
 
-            TreeRequestDto request = new TreeRequestDto(
-                    LocalDate.of(2023, Month.APRIL, 15),
-                    new FieldId(FIELD_ID)
-            );
-
             assertThatThrownBy(() -> treeService.create(request))
                     .isInstanceOf(EntityConstraintViolationException.class)
-                    .hasMessageContaining("Cannot add more trees. Maximum density is 100 trees/ha");
+                    .hasMessageContaining("Cannot add more trees. Maximum density is 100 trees/ha").hasMessageContaining("Current density with new tree would be 101.00 trees/ha");
 
+            verify(treeRepository).countByField(testField);
             verify(treeRepository, never()).save(any());
         }
 
         @Test
         @DisplayName("Should successfully create tree with valid data")
-        void create_WithValidData_ShouldSucceed() {
-            TreeRequestDto request = new TreeRequestDto(
-                    LocalDate.of(2023, Month.APRIL, 15),
-                    new FieldId(FIELD_ID)
-            );
+        void create_WithValidData_ShouldSucceed () {
+            TreeRequestDto request = new TreeRequestDto(LocalDate.of(2023, Month.APRIL, 15), new FieldId(FIELD_ID));
 
             given(fieldService.findEntityById(request.field())).willReturn(testField);
             given(treeRepository.countByField(testField)).willReturn(50);
@@ -127,7 +125,7 @@ class DefaultTreeServiceTest {
 
         @Test
         @DisplayName("Should successfully update tree planting date within allowed months")
-        void update_WithValidPlantingDate_ShouldSucceed() {
+        void update_WithValidPlantingDate_ShouldSucceed () {
             LocalDate newPlantingDate = LocalDate.of(2023, Month.MAY, 15);
             TreeUpdateDto request = new TreeUpdateDto(newPlantingDate, null);
 
@@ -145,7 +143,7 @@ class DefaultTreeServiceTest {
 
         @Test
         @DisplayName("Should throw exception when updating planting date outside allowed months")
-        void update_WithPlantingDateOutsideAllowedMonths_ShouldThrowException() {
+        void update_WithPlantingDateOutsideAllowedMonths_ShouldThrowException () {
             LocalDate invalidPlantingDate = LocalDate.of(2023, Month.FEBRUARY, 15);
             TreeUpdateDto request = new TreeUpdateDto(invalidPlantingDate, null);
 
@@ -160,7 +158,7 @@ class DefaultTreeServiceTest {
 
         @Test
         @DisplayName("Should update tree field with density validation")
-        void update_WithNewField_ShouldValidateDensity() {
+        void update_WithNewField_ShouldValidateDensity () {
             Field newField = createField(2L, "New Field", 10.0);
             TreeUpdateDto request = new TreeUpdateDto(null, new FieldId(newField.getId().value()));
 
@@ -180,13 +178,14 @@ class DefaultTreeServiceTest {
 
         @Test
         @DisplayName("Should throw exception when new field density exceeds maximum")
-        void update_WithNewFieldExceedingDensity_ShouldThrowException() {
-            Field newField = createField(2L, "New Field", 10.0);
+        void update_WithNewFieldExceedingDensity_ShouldThrowException () {
+            Field newField = createField(2L, "New Field", 1.0);
             TreeUpdateDto request = new TreeUpdateDto(null, new FieldId(newField.getId().value()));
 
             given(treeRepository.findById(any(TreeId.class))).willReturn(Optional.of(testTree));
             given(fieldService.findEntityById(request.field())).willReturn(newField);
             given(treeRepository.countByField(newField)).willReturn(100);
+
 
             assertThatThrownBy(() -> treeService.update(testTree.getId(), request))
                     .isInstanceOf(EntityConstraintViolationException.class)
@@ -197,7 +196,7 @@ class DefaultTreeServiceTest {
     }
 
     // Helper methods for creating test objects
-    private Field createField(Long id, String name, Double surface) {
+    private Field createField ( Long id, String name, Double surface ) {
         Field field = new Field();
         field.setId(new FieldId(id));
         field.setName(name);
@@ -205,7 +204,7 @@ class DefaultTreeServiceTest {
         return field;
     }
 
-    private Tree createTree(Long id, LocalDate plantingDate, Field field) {
+    private Tree createTree ( Long id, LocalDate plantingDate, Field field ) {
         Tree tree = new Tree();
         tree.setId(new TreeId(id));
         tree.setPlantingDate(plantingDate);
@@ -213,12 +212,7 @@ class DefaultTreeServiceTest {
         return tree;
     }
 
-    private TreeResponseDto createTreeResponse(Tree tree) {
-        return new TreeResponseDto(
-                tree.getId(),
-                tree.getPlantingDate(),
-                tree.getAge(),
-                null  // You might want to create a mock FieldResponseDto here
-        );
+    private TreeResponseDto createTreeResponse ( Tree tree ) {
+        return new TreeResponseDto(tree.getId(), tree.getPlantingDate(), tree.getAge(), null);
     }
 }
