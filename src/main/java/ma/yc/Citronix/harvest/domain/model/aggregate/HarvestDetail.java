@@ -23,11 +23,11 @@ public class HarvestDetail {
 
     private LocalDate date;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "harvest_id", insertable = false, updatable = false)
     private Harvest harvest;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "tree_id", insertable = false, updatable = false)
     private Tree tree;
 

@@ -62,7 +62,7 @@ public class DefaultFieldService implements FieldService {
         validateFieldUpdate(newFarm, dto.surface(), id);
 
         updateFieldProperties(existingField, newFarm, dto);
-        return mapper.toResponseDto(repository.save(existingField));
+        return mapper.toResponseDto(existingField);
     }
 
     @Override

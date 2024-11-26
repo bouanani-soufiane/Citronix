@@ -1,6 +1,5 @@
 package ma.yc.Citronix.farm.domain.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -33,10 +32,10 @@ public class Field {
     private Double surface;
 
     @ManyToOne
-    @JoinColumn(name = "farm_id")
+    @JoinColumn(name = "farm_id", nullable = false)
     private Farm farm;
 
-    @OneToMany
+    @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tree> trees = new ArrayList<>();
 
 }

@@ -92,8 +92,7 @@ public class DefaultTreeService implements TreeService {
             existingTree.setPlantingDate(dto.plantingDate());
         }
 
-        Tree updatedTree = repository.save(existingTree);
-        return mapper.toResponseDto(updatedTree);
+        return mapper.toResponseDto(existingTree);
     }
 
     @Override

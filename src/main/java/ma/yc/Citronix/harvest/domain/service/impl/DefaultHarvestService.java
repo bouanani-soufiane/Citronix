@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Slf4j
@@ -29,6 +30,7 @@ import java.time.LocalDate;
 @Transactional
 @RequiredArgsConstructor
 public class DefaultHarvestService implements HarvestService {
+
 
     private final HarvestRepository repository;
     private final HarvestMapper mapper;
@@ -42,7 +44,8 @@ public class DefaultHarvestService implements HarvestService {
 
     @Override
     public HarvestResponseDto findById ( HarvestId id ) {
-        return mapper.toResponseDto(repository.findById(id).orElseThrow(() -> new NotFoundException("Harvest", id.value())));
+        return mapper.toResponseDto(repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Harvest", id.value())));
 
     }
 
@@ -54,14 +57,16 @@ public class DefaultHarvestService implements HarvestService {
 
         validateNoExistingHarvest(farm.getId(), dto.season(), dto.date());
 
-        Harvest harvest = Harvest.builder().season(dto.season()).date(dto.date()).farm(farm).build();
+        Harvest harvest = Harvest.builder().season(dto.season()).date(dto.date()).totalQuantity(0.0)
+                .farm(farm).build();
 
         return mapper.toResponseDto(repository.save(harvest));
     }
 
     @Override
     public HarvestResponseDto update ( HarvestId id, HarvestUpdateDto dto ) {
-        Harvest existingHarvest = repository.findById(id).orElseThrow(() -> new NotFoundException("Harvest", id.value()));
+        Harvest existingHarvest = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Harvest", id.value()));
 
         Farm farm = farmService.findEntityById(dto.farm());
         Season season = dto.season();
@@ -81,7 +86,7 @@ public class DefaultHarvestService implements HarvestService {
         existingHarvest.setDate(date);
         existingHarvest.setFarm(farm);
 
-        return mapper.toResponseDto(repository.save(existingHarvest));
+        return mapper.toResponseDto(existingHarvest);
     }
 
     @Override
@@ -116,7 +121,19 @@ public class DefaultHarvestService implements HarvestService {
 
         }
     }
+    public Double getTotalHarvestByFarmId(Long farmId) {
+        return repository.findTotalHarvestByFarmId(farmId)
+                .orElse(0.0);
+    }
 
+    @Override
+    public Double findByFarm ( FarmId farmId ) {
+
+        List<Harvest> harvests = repository.findByFarm(farmId);
+
+        double sum = harvests.stream().mapToDouble(harvest -> harvest.getTotalQuantity()).sum();
+        return sum;
+    }
 
     @Override
     public Harvest findEntityById ( HarvestId id ) {

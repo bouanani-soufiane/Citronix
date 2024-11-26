@@ -37,13 +37,13 @@ public class Harvest {
 
     private Double totalQuantity;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Farm farm;
 
-    @OneToMany(mappedBy = "harvest", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "harvest", fetch = FetchType.EAGER , cascade = CascadeType.ALL ,orphanRemoval = true)
     private List<HarvestDetail> harvestDetails = new ArrayList<>();
 
-    @OneToOne(mappedBy = "harvest")
+    @OneToOne(mappedBy = "harvest" , cascade = CascadeType.ALL , orphanRemoval = true)
     private Sale sale;
 
     public void addHarvestDetail ( HarvestDetail harvestDetail) {
@@ -54,7 +54,4 @@ public class Harvest {
                 .mapToDouble(HarvestDetail::getQuantity)
                 .sum();
     }
-
-
-
 }

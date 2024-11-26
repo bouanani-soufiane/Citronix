@@ -6,7 +6,7 @@ import ma.yc.Citronix.sale.application.dto.request.SaleRequestDto;
 import ma.yc.Citronix.sale.application.dto.request.SaleUpdateDto;
 import ma.yc.Citronix.sale.application.dto.response.SaleResponseDto;
 import ma.yc.Citronix.sale.domain.model.valueObject.SaleId;
-import ma.yc.Citronix.sale.domain.service.impl.SaleService;
+import ma.yc.Citronix.sale.domain.service.SaleService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

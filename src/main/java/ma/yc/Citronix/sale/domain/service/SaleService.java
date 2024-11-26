@@ -1,4 +1,4 @@
-package ma.yc.Citronix.sale.domain.service.impl;
+package ma.yc.Citronix.sale.domain.service;
 
 import ma.yc.Citronix.common.application.service.CrudService;
 import ma.yc.Citronix.sale.application.dto.request.SaleRequestDto;

@@ -42,7 +42,7 @@ public class Farm {
     @PastOrPresent
     private LocalDate creationDate;
 
-    @OneToMany(mappedBy = "farm")
+    @OneToMany(mappedBy = "farm",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Field> fields = new ArrayList<>();
 
     @OneToMany(mappedBy = "farm")

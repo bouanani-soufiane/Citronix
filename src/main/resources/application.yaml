@@ -3,8 +3,8 @@ spring:
     name: Citronix
   datasource:
     url: jdbc:postgresql://localhost:5432/citronix
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    username: soufiane
+    password: 1234
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -17,8 +17,7 @@ logging:
     org.hibernate.validator: DEBUG
     org.springframework: WARN
 
-
-##---------- API information ---------------------------------
+##--------------- API information ------------------- #
 contact:
   email: yc.ma
 
@@ -30,5 +29,31 @@ prod-server:
 
 project:
   version: 1.0
-  title: Citornix
-  description: Citornix pour la gestion des fermes
+  title: Citronix
+  description: Citronix pour la gestion des fermes
+
+#----------  Actuator settings  -------------- #
+actuator:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # Exposes all actuator endpoints
+      base-path: /actuator
+  health:
+    db:
+      enabled: true
+      show-details: always
+    diskspace:
+      enabled: true
+    services:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # Optional if you already configured under 'actuator'
+  health:
+    db:
+      enabled: true
+      show-details: always

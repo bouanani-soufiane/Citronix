@@ -94,12 +94,10 @@ jobs:
       - name: Deploy to Production
         run: |
           echo "Deploying to production server..."
-          # Add your deployment commands here
 
       - name: Verify Deployment
         run: |
           echo "Verifying deployment..."
-          # Add verification steps here
 
       - name: Create Release
         id: create_release

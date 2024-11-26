@@ -213,6 +213,6 @@ class DefaultTreeServiceTest {
     }
 
     private TreeResponseDto createTreeResponse ( Tree tree ) {
-        return new TreeResponseDto(tree.getId(), tree.getPlantingDate(), tree.getAge(), null);
+        return new TreeResponseDto(tree.getId(), tree.getPlantingDate(), tree.getAge(), tree.getProductivity() , null);
     }
 }

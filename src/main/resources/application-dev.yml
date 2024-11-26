@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/citronix
+    username: soufiane
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+logging:
+  level:
+    root: INFO
+    org.hibernate.validator: DEBUG
+    org.springframework: WARN
+
+server:
+  port: 8080

@@ -1,4 +1,4 @@
-package ma.yc.Citronix.sale.domain.service;
+package ma.yc.Citronix.sale.domain.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import ma.yc.Citronix.sale.application.mapper.SaleMapper;
 import ma.yc.Citronix.sale.domain.exception.HarvestAlreadySoldException;
 import ma.yc.Citronix.sale.domain.model.aggregate.Sale;
 import ma.yc.Citronix.sale.domain.model.valueObject.SaleId;
-import ma.yc.Citronix.sale.domain.service.impl.SaleService;
+import ma.yc.Citronix.sale.domain.service.SaleService;
 import ma.yc.Citronix.sale.infrastructure.repository.SaleRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

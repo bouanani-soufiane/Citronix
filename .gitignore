@@ -52,4 +52,4 @@ Thumbs.db
 
 # Application properties with sensitive data
 src/main/resources/application-*.properties
-!src/main/resources/application.yaml
+!src/main/resources/application.yaml.env*

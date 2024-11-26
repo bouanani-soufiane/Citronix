@@ -49,5 +49,19 @@ class HarvestController {
         service.delete(new HarvestId(id));
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/total/{farmId}")
+    public Double getTotalHarvest(@PathVariable Long farmId) {
+        return service.getTotalHarvestByFarmId(farmId);
+    }
+
+    @GetMapping("/totals/{farmId}")
+    public Double getTotalHarvestByFarmId(@PathVariable Long farmId) {
+        return service.getTotalHarvestByFarmId(farmId);
+    }
+
+
+
+
 }
 

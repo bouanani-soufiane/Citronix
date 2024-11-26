@@ -9,5 +9,6 @@ public record TreeResponseDto(
         TreeId id,
         LocalDate plantingDate,
         Integer age,
+        Double productivity,
         FieldResponseDto field) {
 }
