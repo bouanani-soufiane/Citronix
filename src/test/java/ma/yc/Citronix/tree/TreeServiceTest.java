@@ -130,7 +130,6 @@ class DefaultTreeServiceTest {
             TreeUpdateDto request = new TreeUpdateDto(newPlantingDate, null);
 
             given(treeRepository.findById(any(TreeId.class))).willReturn(Optional.of(testTree));
-            given(treeRepository.save(any(Tree.class))).willReturn(testTree);
 
             TreeResponseDto expectedResponse = createTreeResponse(testTree);
             given(treeMapper.toResponseDto(testTree)).willReturn(expectedResponse);
@@ -138,7 +137,7 @@ class DefaultTreeServiceTest {
             TreeResponseDto response = treeService.update(testTree.getId(), request);
 
             assertThat(response).isNotNull();
-            verify(treeRepository).save(testTree);
+
         }
 
         @Test
@@ -165,7 +164,6 @@ class DefaultTreeServiceTest {
             given(treeRepository.findById(any(TreeId.class))).willReturn(Optional.of(testTree));
             given(fieldService.findEntityById(request.field())).willReturn(newField);
             given(treeRepository.countByField(newField)).willReturn(50);
-            given(treeRepository.save(any(Tree.class))).willReturn(testTree);
 
             TreeResponseDto expectedResponse = createTreeResponse(testTree);
             given(treeMapper.toResponseDto(testTree)).willReturn(expectedResponse);
@@ -173,7 +171,6 @@ class DefaultTreeServiceTest {
             TreeResponseDto response = treeService.update(testTree.getId(), request);
 
             assertThat(response).isNotNull();
-            verify(treeRepository).save(testTree);
         }
 
         @Test

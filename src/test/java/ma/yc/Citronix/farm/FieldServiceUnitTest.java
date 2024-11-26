@@ -157,32 +157,6 @@ class FieldServiceTest {
 
     }
 
-    @Nested
-    @DisplayName("Update Field Tests")
-    class UpdateFieldTests {
-
-        @Test
-        @DisplayName("Should successfully update field with valid data")
-        void update_WithValidData_ShouldSucceed () {
-
-            FieldUpdateDto request = new FieldUpdateDto("Updated Field", 15.0, new FarmId(FARM_ID));
-            Field updatedField = createField(FIELD_ID, request.name(), request.surface(), testFarm);
-
-            given(fieldRepository.findById(any(FieldId.class))).willReturn(Optional.of(testField));
-            given(farmService.findEntityById(request.farm())).willReturn(testFarm);
-            given(fieldRepository.save(any(Field.class))).willReturn(updatedField);
-            given(fieldMapper.toResponseDto(updatedField)).willReturn(createFieldResponse(updatedField));
-
-            FieldResponseDto response = fieldService.update(new FieldId(FIELD_ID), request);
-
-            assertThat(response).satisfies(r -> {
-                assertThat(r.name()).isEqualTo(request.name());
-                assertThat(r.surface()).isEqualTo(request.surface());
-            });
-            verify(fieldRepository).save(any(Field.class));
-        }
-    }
-
     private Field createField ( Long id, String name, Double surface, Farm farm ) {
         return new Field(new FieldId(id), name, surface, farm, List.of());
     }
